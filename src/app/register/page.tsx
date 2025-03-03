@@ -1,13 +1,13 @@
 import LoginForm from "@/components/modules/auth/LogInForm";
+import RegisterForm from "@/components/modules/auth/RegisterForm";
 
 
-const LoginPage = () => {
+const RegPage = () => {
   return (
     <div className="h-screen w-screen flex justify-center items-center">
-
-      <LoginForm />
+      <RegisterForm />
     </div>
   );
 };
 
-export default LoginPage;
+export default RegPage;

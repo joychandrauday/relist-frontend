@@ -1,16 +1,28 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaFacebookF, FaTwitter, FaInstagram, FaUser, FaShoppingCart, FaHeart } from "react-icons/fa";
 import { WordRotate } from "../magicui/word-rotate";
+import { useUser } from "@/context/UserContext";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { logout } from "@/services/AuthService";
+import { LogOut } from "lucide-react";
 
 const Navbar = () => {
-    const user = null
-    // const user = {
-    //     name: "John Doe",
-    //     avatar: "https://img.freepik.com/premium-vector/avatar-icon0002_750950-43.jpg?semt=ais_hybrid",
-
-    // }
+    const { user, setIsLoading } = useUser();
+    const handleLogOut = () => {
+        logout()
+    }
+    console.log(user);
     return (
         <nav className="w-full bg-white">
             {/* Top Bar */}
@@ -57,16 +69,36 @@ const Navbar = () => {
                     <Link href="/about" className="hover:text-[#FB8500]">About</Link>
                     <Link href="/contact" className="hover:text-[#FB8500]">Contact</Link>
                 </div>
-                <div className="hidden md:block">
-                    <span>🔥 Big Sale - Up to 50% Off!</span>
-                </div>
+
                 {/* User Section */}
                 <div className="flex items-center gap-4">
                     {user ? (
                         <>
                             <FaHeart className="text-2xl text-[#ffffff] cursor-pointer hover:text-[#FB8500]" />
                             <FaShoppingCart className="text-2xl text-[#ffffff] cursor-pointer hover:text-[#FB8500]" />
-                            <Image src={'/avatar.png'} width={120} height={120} alt="User Avatar" className="w-10 h-10 rounded-full cursor-pointer border-2 border-white" />
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Avatar>
+                                        <AvatarImage src={user.avatar} />
+                                        <AvatarFallback>User</AvatarFallback>
+                                    </Avatar>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>
+                                        <Link href={`/${user?.role}/dashboard`}>Dashboard</Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                        className="bg-red-500 cursor-pointer"
+                                        onClick={handleLogOut}
+                                    >
+                                        <LogOut />
+                                        <span>Log Out</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </>
                     ) : (
                         <div className="flex items-center">
