@@ -21,8 +21,18 @@ interface Listing {
     price: number;
     condition: string;
     status: string;
+    location: {
+        city: string;
+        state?: string;
+        country: string;
+    };
 }
-
+const conditionOptions = [
+    "Brand New", "Like New", "Excellent", "Very Good", "Good", "Fair", "Refurbished", "For Parts / Not Working"
+];
+const districtsOfBangladesh = [
+    "Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", "Chattogram", "Chuadanga", "Cox's Bazar", "Cumilla", "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", "Jhalokathi", "Jhenaidah", "Joypurhat", "Khagrachari", "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"
+];
 // Props
 const ListingTable = ({ listings }: { listings: Listing[] }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,7 +53,7 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
         setOriginalListing(null);
     };
 
-    // Handle Input Change
+    // Handle Input Change for listing fields
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!selectedListing) return;
         setSelectedListing({
@@ -52,7 +62,22 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
         });
     };
 
-    // Save Changes
+    // Handle location field changes
+    const handleLocationChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        field: 'city' | 'state' | 'country'
+    ) => {
+        if (!selectedListing) return;
+        setSelectedListing({
+            ...selectedListing,
+            location: {
+                ...selectedListing.location,
+                [field]: e.target.value,
+            },
+        });
+    };
+
+    // Save changes
     const handleSave = async () => {
         if (!selectedListing || !selectedListing._id) return;
 
@@ -70,8 +95,8 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
         }
 
         try {
-            await updateListing(updatedFields, selectedListing._id);
-            console.log(updatedFields);
+            const res = await updateListing(updatedFields, selectedListing._id);
+            console.log(res);
             toast.success("Listing updated successfully!");
             closeModal();
         } catch (error) {
@@ -81,7 +106,6 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
 
     // Handle Delete
     const handleDelete = async (id: string) => {
-        // Show confirmation dialog
         const result = await Swal.fire({
             title: 'Are you sure?',
             text: 'Do you want to delete this listing?',
@@ -93,11 +117,9 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
 
         if (result.isConfirmed) {
             try {
-                const res = await deleteListing(id);
-                console.log(res);
-                // add swal for success not toast
+                await deleteListing(id);
                 Swal.fire("Deleted!", "The listing has been deleted.", "success");
-                window.location.reload()
+                window.location.reload();
             } catch (error) {
                 toast.error("Failed to delete listing.");
             }
@@ -122,7 +144,28 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                             <TableRow key={listing._id}>
                                 <TableCell>{listing.title}</TableCell>
                                 <TableCell>৳{listing.price}</TableCell>
-                                <TableCell>{listing.status}</TableCell>
+                                <TableCell>
+                                    <Select
+                                        value={listing.status}
+                                        onValueChange={async (newStatus) => {
+                                            try {
+                                                await updateListing({ status: newStatus }, listing._id);
+                                                toast.success("Status updated successfully!");
+                                                window.location.reload()
+                                            } catch (error) {
+                                                toast.error("Failed to update status.");
+                                            }
+                                        }}
+                                    >
+                                        <SelectTrigger className="w-[80px]">
+                                            <SelectValue placeholder="Select Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="sold">Sold</SelectItem>
+                                            <SelectItem value="available">Available</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </TableCell>
                                 <TableCell>
                                     <Avatar>
                                         <AvatarImage src={listing.images[0]} />
@@ -166,7 +209,39 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                             </div>
                             <div>
                                 <Label htmlFor="condition">Condition</Label>
-                                <Input name="condition" value={selectedListing.condition || ""} onChange={handleChange} />
+                                <select
+                                    name="condition"
+                                    value={selectedListing?.condition || ""}
+                                    onChange={(e) => setSelectedListing({ ...selectedListing, condition: e.target.value })}
+                                    className="input"
+                                >
+                                    <option value="">Select Condition</option>
+                                    {conditionOptions.map((condition) => (
+                                        <option key={condition} value={condition}>{condition}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <Label htmlFor="location-city">City</Label>
+                                <select
+                                    name="city"
+                                    value={selectedListing?.location?.city || ""}
+                                    onChange={(e) => handleLocationChange(e, 'city')}
+                                    className="input"
+                                >
+                                    <option value="">Select City</option>
+                                    {districtsOfBangladesh.map((district) => (
+                                        <option key={district} value={district}>{district}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <Label htmlFor="location-state">State</Label>
+                                <Input name="state" value={selectedListing.location?.state || ""} onChange={(e) => handleLocationChange(e, 'state')} />
+                            </div>
+                            <div>
+                                <Label htmlFor="location-country">Country</Label>
+                                <Input name="country" value={selectedListing.location?.country || ""} onChange={(e) => handleLocationChange(e, 'country')} />
                             </div>
                             <div>
                                 <Label htmlFor="status">Status</Label>

@@ -1,9 +1,12 @@
+import Profile from '@/components/modules/dashboard/Profile/Profile';
 import React from 'react';
 
-const ProfilePage = () => {
+const ProfilePage = async () => {
+
     return (
-        <div>
-            <h1>Welcome to the ReList Marketplace!</h1>
+        <div className="container mx-auto p-6">
+            <h1 className="text-2xl font-bold">User Profile</h1>
+            <Profile />
         </div>
     );
 }

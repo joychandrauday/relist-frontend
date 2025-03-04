@@ -4,6 +4,7 @@ import ListingTable from './ListingTable';
 import TablePagination from './TablePagination';
 
 const ManageListing = ({ listings }) => {
+    console.log(listings);
     return (
         <div>
             <ListingTable listings={listings?.listings} />

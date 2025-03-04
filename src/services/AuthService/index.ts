@@ -57,3 +57,53 @@ export const getCurrentUser = async () => {
 export const logout = async () => {
   (await cookies()).delete("accessToken");
 };
+
+export const addToWishlist = async (productId: any) => {
+  try {
+    const accessToken = (await cookies()).get("accessToken")?.value;
+    let decodedData = null;
+
+    if (accessToken) {
+      decodedData = await jwtDecode(accessToken);
+      console.log(decodedData.id);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/${decodedData.id}/wishlist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ listingId: productId }),
+      });
+      const result = await res.json();
+
+      return result;
+    } else {
+      return null;
+    }
+  } catch (error: any) {
+    return Error(error);
+  }
+};
+export const removeFromWishlist = async (productId: any) => {
+  try {
+    const accessToken = (await cookies()).get("accessToken")?.value;
+    let decodedData = null;
+
+    if (accessToken) {
+      decodedData = await jwtDecode(accessToken);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/${decodedData.id}/wishlist`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ listingId: productId }),
+      });
+      const result = await res.json();
+      console.log(result);
+      return result;
+    } else {
+      return null;
+    }
+  } catch (error: any) {
+    return Error(error);
+  }
+};

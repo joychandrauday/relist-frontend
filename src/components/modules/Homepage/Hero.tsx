@@ -1,16 +1,12 @@
 import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
-import { getAllListings } from '@/services/Profile';
+import { getAllListings } from '@/services/listings';
 import React from 'react';
 
 const Hero = async () => {
-    const { data: listings } = await getAllListings({
-        page: 1,
-        limit: 5,
-    });
-    console.log(listings);
+    const { data: listings } = await getAllListings('5', '');
     return (
         <div>
-            <AnimatedTestimonials testimonials={listings} />
+            <AnimatedTestimonials testimonials={listings.listings} autoplay={true} />
         </div>
     );
 }

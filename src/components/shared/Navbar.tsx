@@ -21,6 +21,7 @@ const Navbar = () => {
     const { user, setIsLoading } = useUser();
     const handleLogOut = () => {
         logout()
+        window.location.reload();
     }
     console.log(user);
     return (
@@ -65,7 +66,7 @@ const Navbar = () => {
                 {/* Nav Items */}
                 <div className="flex gap-6">
                     <Link href="/" className="hover:text-[#FB8500]">Home</Link>
-                    <Link href="/shop" className="hover:text-[#FB8500]">Shop</Link>
+                    <Link href="/products" className="hover:text-[#FB8500]">Products</Link>
                     <Link href="/about" className="hover:text-[#FB8500]">About</Link>
                     <Link href="/contact" className="hover:text-[#FB8500]">Contact</Link>
                 </div>
@@ -74,7 +75,9 @@ const Navbar = () => {
                 <div className="flex items-center gap-4">
                     {user ? (
                         <>
-                            <FaHeart className="text-2xl text-[#ffffff] cursor-pointer hover:text-[#FB8500]" />
+                            <Link href={'/wishlist'}>
+                                <FaHeart className="text-2xl text-[#ffffff] cursor-pointer hover:text-[#FB8500]" />
+                            </Link>
                             <FaShoppingCart className="text-2xl text-[#ffffff] cursor-pointer hover:text-[#FB8500]" />
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
@@ -106,7 +109,7 @@ const Navbar = () => {
                                 Login
                             </Link>
                             <div className="divider">/</div>
-                            <Link href="/signup" className="px-4 py-2  hover:text-[#FB8500]">
+                            <Link href="/register" className="px-4 py-2  hover:text-[#FB8500]">
                                 Sign Up
                             </Link>
                         </div>

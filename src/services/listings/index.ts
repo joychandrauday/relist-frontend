@@ -1,12 +1,15 @@
 "use server";
-import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 
 // get all products
-export const getAllListings = async (page?: string, limit?: string) => {
+export const getAllListings = async (
+    limit?: string,
+    query?: string
+) => {
     try {
+
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/listings/all?limit=${limit}&page=${page}`
+            `${process.env.NEXT_PUBLIC_BASE_API}/listings/all?limit=${limit}&${query}`
         );
         const data = await res.json();
         return data;
@@ -14,6 +17,7 @@ export const getAllListings = async (page?: string, limit?: string) => {
         return Error(error.message);
     }
 };
+
 export const getAllListingsByUser = async (page?: string, limit?: string) => {
     try {
         const res = await fetch(
@@ -36,12 +40,7 @@ export const getAllListingsByUser = async (page?: string, limit?: string) => {
 export const getSingleProduct = async (productId: string) => {
     try {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/product/${productId}`,
-            {
-                next: {
-                    tags: ["PRODUCT"],
-                },
-            }
+            `${process.env.NEXT_PUBLIC_BASE_API}/listings/${productId}`,
         );
         const data = await res.json();
         return data;
@@ -52,7 +51,6 @@ export const getSingleProduct = async (productId: string) => {
 
 export const addListing = async (listingData: any): Promise<any> => {
     try {
-        console.log(listingData);  // Check if listing data contains values
 
         // Send the data as JSON in the request body
         const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/listings`, {
@@ -64,7 +62,6 @@ export const addListing = async (listingData: any): Promise<any> => {
             },
         });
 
-        console.log(res);
         return res.json();  // Return the response as JSON
     } catch (error: any) {
         return Error(error);
@@ -78,7 +75,6 @@ export const updateListing = async (
     productId: string
 ): Promise<any> => {
     try {
-        console.log(productData);
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BASE_API}/listings/${productId}`,
             {
@@ -108,9 +104,21 @@ export const deleteListing = async (
                 },
             }
         );
-        console.log(res);
         return res.json();
     } catch (error: any) {
         return Error(error);
+    }
+};
+
+// get all categories
+export const getAllCategories = async () => {
+    try {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_API}/category`,
+        );
+        const data = await res.json();
+        return data;
+    } catch (error: any) {
+        return Error(error.message);
     }
 };

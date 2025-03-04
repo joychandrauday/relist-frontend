@@ -3,9 +3,13 @@
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { HiCurrencyBangladeshi } from "react-icons/hi";
+import MessageButton from "../modules/message/MessageButton";
 
 type Testimonial = {
+    _id: string;
     title: string;
     price: string;
     description: string;
@@ -15,8 +19,12 @@ type Testimonial = {
         name: string;
         email: string;
         avatar: string;
-    }
+    };
+    condition: string;
+    createdAt: string;
+    updatedAt: string;
 };
+
 export const AnimatedTestimonials = ({
     testimonials = [],
     autoplay = false,
@@ -24,8 +32,8 @@ export const AnimatedTestimonials = ({
     testimonials: Testimonial[];
     autoplay?: boolean;
 }) => {
-    console.log(testimonials);
     const [active, setActive] = useState(0);
+    const [isHovering, setIsHovering] = useState(false);
 
     const handleNext = () => {
         setActive((prev) => (prev + 1) % testimonials.length);
@@ -40,24 +48,29 @@ export const AnimatedTestimonials = ({
     };
 
     useEffect(() => {
-        if (autoplay) {
-            const interval = setInterval(handleNext, 5000);
+        if (autoplay && !isHovering) {
+            const interval = setInterval(handleNext, 3000);
             return () => clearInterval(interval);
         }
-    }, [autoplay]);
+    }, [autoplay, isHovering]);
 
     const randomRotateY = () => {
         return Math.floor(Math.random() * 21) - 10;
     };
+
     return (
-        <div className="max-w-sm md:max-w-4xl mx-auto antialiased font-sans px-4 md:px-8 lg:px-12 py-20">
-            <div className="relative grid grid-cols-1 md:grid-cols-2  gap-20">
+        <div
+            className="max-w-sm md:max-w-5xl mx-auto antialiased font-sans px-4 md:px-8 lg:px-12 py-20"
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+        >
+            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-20">
                 <div>
-                    <div className="relative h-80 w-full">
+                    <div className="relative h-80 w-full z-40">
                         <AnimatePresence>
                             {testimonials?.map((testimonial, index) => (
                                 <motion.div
-                                    key={testimonial._id} // key হিসেবে _id ব্যবহার করো, কারণ src নেই
+                                    key={testimonial._id}
                                     initial={{
                                         opacity: 0,
                                         scale: 0.9,
@@ -82,22 +95,22 @@ export const AnimatedTestimonials = ({
                                         duration: 0.4,
                                         ease: "easeInOut",
                                     }}
-                                    className="absolute inset-0 origin-bottom"
+                                    className="absolute inset-0 origin-bottom z-40"
                                 >
                                     <Image
-                                        src={testimonial.images[0]} // এখানে testimonial.src থাকায় সমস্যা হচ্ছিল
-                                        alt={testimonial.title} // title ব্যাকআপ হিসেবে ব্যবহার করা হলো
+                                        src={testimonial.images[0]}
+                                        alt={testimonial.title}
                                         width={500}
                                         height={500}
                                         draggable={false}
-                                        className="h-full w-full rounded-3xl object-cover object-center"
+                                        className="h-full w-full rounded-3xl object-cover object-center z-40"
                                     />
                                 </motion.div>
                             ))}
-
                         </AnimatePresence>
                     </div>
                 </div>
+
                 <div className="flex justify-between flex-col py-4">
                     <motion.div
                         key={active}
@@ -119,47 +132,56 @@ export const AnimatedTestimonials = ({
                         }}
                     >
                         <h3 className="text-2xl font-bold dark:text-white text-black">
-                            {testimonials[active].title}
+                            {testimonials[active].title.slice(0, 20)}...
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-neutral-500">
-                            {testimonials[active].description}
+                            {testimonials[active].description.slice(0, 200)}
                         </p>
-                        <motion.p className="text-lg text-gray-500 mt-8 dark:text-neutral-300">
-                            {testimonials[active].title.split(" ").map((word, index) => (
-                                <motion.span
-                                    key={index}
-                                    initial={{
-                                        filter: "blur(10px)",
-                                        opacity: 0,
-                                        y: 5,
-                                    }}
-                                    animate={{
-                                        filter: "blur(0px)",
-                                        opacity: 1,
-                                        y: 0,
-                                    }}
-                                    transition={{
-                                        duration: 0.2,
-                                        ease: "easeInOut",
-                                        delay: 0.02 * index,
-                                    }}
-                                    className="inline-block"
-                                >
-                                    {word}&nbsp;
-                                </motion.span>
-                            ))}
+
+                        <motion.p className="text-lg text-gray-500 mt-5 dark:text-neutral-300 flex items-center gap-2">
+                            <HiCurrencyBangladeshi /> {testimonials[active].price}
                         </motion.p>
+
+                        <motion.p className="text-sm text-gray-500 dark:text-neutral-400">
+                            Condition: {testimonials[active].condition}
+                        </motion.p>
+
+                        <div className="flex items-center mt-4">
+                            <Image
+                                src={testimonials[active].userID.avatar}
+                                alt={testimonials[active].userID.name}
+                                width={40}
+                                height={40}
+                                className="rounded-full"
+                            />
+                            <p className="ml-3 text-sm text-gray-500 dark:text-neutral-400">
+                                {testimonials[active].userID.name}
+                            </p>
+                        </div>
+
+                        {/* View Product and Message Seller Buttons */}
+                        <div className="flex gap-4 mt-6">
+                            <Link href={`/products/${testimonials[active]._id}`}>
+                                <button
+                                    className="bg-[#FB8500] text-white py-2 px-4 rounded-none hover:bg-blue-400 transition-all"
+                                >
+                                    View Product
+                                </button>
+                            </Link>
+                            <MessageButton sellerId={testimonials[active].userID._id} sellerName={testimonials[active].userID.name} sellerAvatar={testimonials[active].userID.avatar} />
+                        </div>
                     </motion.div>
-                    <div className="flex gap-4 pt-12 md:pt-0">
+
+                    <div className="flex gap-4 pt-12 md:pt-10">
                         <button
                             onClick={handlePrev}
-                            className="h-7 w-7 rounded-full bg-gray-100 dark:bg-neutral-800 flex items-center justify-center group/button"
+                            className="h-7 w-7 rounded-full bg-[#FB8500] dark:bg-neutral-800 flex items-center justify-center group/button"
                         >
                             <IconArrowLeft className="h-5 w-5 text-black dark:text-neutral-400 group-hover/button:rotate-12 transition-transform duration-300" />
                         </button>
                         <button
                             onClick={handleNext}
-                            className="h-7 w-7 rounded-full bg-gray-100 dark:bg-neutral-800 flex items-center justify-center group/button"
+                            className="h-7 w-7 rounded-full bg-[#FB8500] dark:bg-neutral-800 flex items-center justify-center group/button"
                         >
                             <IconArrowRight className="h-5 w-5 text-black dark:text-neutral-400 group-hover/button:-rotate-12 transition-transform duration-300" />
                         </button>

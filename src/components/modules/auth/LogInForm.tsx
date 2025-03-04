@@ -32,7 +32,6 @@ export default function LoginForm() {
             console.log("Logged in user:", res);
             if (res.success) {
                 toast.success('User log in Successfull!')
-                window.location.reload()
                 if (redirect) {
                     router.push(redirect);
                 } else {
