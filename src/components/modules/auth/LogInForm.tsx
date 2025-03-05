@@ -15,8 +15,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-import { loginUser } from "@/services/AuthService";
+// import { loginUser } from "@/services/AuthService";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
     const form = useForm();
@@ -28,19 +29,14 @@ export default function LoginForm() {
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         setIsSubmitting(true);
         try {
-            const res = await loginUser(data)
-            console.log("Logged in user:", res);
-            if (res.success) {
-                toast.success('User log in Successfull!')
-                if (redirect) {
-                    router.push(redirect);
-                } else {
-                    router.push("/");
-                }
+            await signIn("credentials", data);
+            toast.success('User log in Successfull!')
+            if (redirect) {
+                router.push(redirect);
             } else {
-                toast.error('Failed to log in. Please try again.')
+                router.push("/");
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error(err);
         } finally {
             setIsSubmitting(false);
@@ -113,7 +109,7 @@ export default function LoginForm() {
 
             {/* Register Link */}
             <p className="text-sm text-gray-600 text-center mt-3">
-                Don't have an account?
+                Don&apos;t have an account?
                 <Link href="/register" className="text-primary font-semibold ml-1">
                     Register
                 </Link>

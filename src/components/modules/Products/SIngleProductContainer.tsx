@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { addToWishlist } from "@/services/AuthService";
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { IProduct } from '@/types/product';
 
-const SIngleProductContainer = ({ product }) => {
+const SIngleProductContainer = ({ product }: { product: IProduct }) => {
     const router = useRouter();  // Hook to handle routing
     const handleWishlist = async () => {
         try {

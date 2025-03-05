@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-import { cookies } from "next/headers";
+import { authOptions } from "@/utils/authOptions";
+import { getServerSession } from "next-auth";
 
 // get all products
 export const getAllListings = async (
@@ -19,12 +21,14 @@ export const getAllListings = async (
 };
 
 export const getAllListingsByUser = async (page?: string, limit?: string) => {
+    const session = await getServerSession(authOptions);
+
     try {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BASE_API}/listings/user?limit=${limit}&page=${page}`,
             {
                 headers: {
-                    authorization: (await cookies()).get("accessToken")!.value,
+                    authorization: `${session?.user?.accessToken}`,
                 },
             }
         );
@@ -50,6 +54,8 @@ export const getSingleProduct = async (productId: string) => {
 };
 
 export const addListing = async (listingData: any): Promise<any> => {
+    const session = await getServerSession(authOptions);
+
     try {
 
         // Send the data as JSON in the request body
@@ -58,7 +64,7 @@ export const addListing = async (listingData: any): Promise<any> => {
             body: JSON.stringify(listingData),  // Send data as JSON
             headers: {
                 'Content-Type': 'application/json',  // Set content type to JSON
-                authorization: (await cookies()).get("accessToken")!.value,
+                authorization: `${session?.user?.accessToken}`,
             },
         });
 
@@ -75,13 +81,14 @@ export const updateListing = async (
     productId: string
 ): Promise<any> => {
     try {
+        const session = await getServerSession(authOptions);
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BASE_API}/listings/${productId}`,
             {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    authorization: (await cookies()).get("accessToken")!.value,
+                    authorization: `${session?.user?.accessToken}`,
                 },
                 body: JSON.stringify(productData),
             }
@@ -95,12 +102,13 @@ export const deleteListing = async (
     productId: string
 ): Promise<any> => {
     try {
+        const session = await getServerSession(authOptions);
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_BASE_API}/listings/${productId}`,
             {
                 method: "DELETE",
                 headers: {
-                    authorization: (await cookies()).get("accessToken")!.value,
+                    authorization: `${session?.user?.accessToken}`,
                 },
             }
         );

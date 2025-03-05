@@ -1,4 +1,4 @@
-import LoginForm from "@/components/modules/auth/LogInForm";
+
 import RegisterForm from "@/components/modules/auth/RegisterForm";
 
 

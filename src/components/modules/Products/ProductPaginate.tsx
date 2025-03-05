@@ -15,7 +15,7 @@ const ProductPaginate = ({ totalPage }: { totalPage: number }) => {
     useEffect(() => {
         // Sync current page with URL query param
         setCurrentPage(currentPageFromURL);
-    }, [searchParams]);
+    }, [currentPageFromURL, searchParams]);
 
     const handlePrev = () => {
         if (currentPage > 1) {

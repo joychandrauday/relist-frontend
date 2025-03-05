@@ -32,8 +32,12 @@ export default function RegisterForm() {
                 toast.success('User Registration Success!')
                 router.push("/login");
             }
-        } catch (err: any) {
-            console.error(err);
+        } catch (err) {
+            if (err instanceof Error) {
+                toast.error(`Failed to verify order. ${err.message}`);
+            } else {
+                toast.error("Failed to verify order. An unknown error occurred.");
+            }
         } finally {
             setIsSubmitting(false);
         }

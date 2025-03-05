@@ -1,25 +1,34 @@
 import ProductContainer from '@/components/modules/Products/ProductContainer';
-import ProductFilter from '@/components/modules/Products/ProductFilter';
 import { getAllListings } from '@/services/listings';
 import React from 'react';
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+type SearchParams = {
+    [key: string]: string | string[] | undefined;
+};
+
 const ProductPage = async ({
     searchParams,
 }: {
-    searchParams: SearchParams;
+    searchParams: Promise<SearchParams>; // SearchParams কে Promise হিসাবে ধরতে হবে
 }) => {
-    const query = await searchParams;
-    // Extract the 'page' value from the query params
-    const page = query.page ? query.page : '1';
-    console.log(page);
-    const queryString = new URLSearchParams(query).toString();
+    const resolvedParams = await searchParams; // searchParams কে await করুন
+    const sanitizedParams = Object.fromEntries(
+        Object.entries(resolvedParams).map(([key, value]) => [
+            key,
+            Array.isArray(value) ? value.join(',') : String(value),
+        ])
+    );
 
-    const { data: data } = await getAllListings('6', queryString)
+    const queryParams = new URLSearchParams(sanitizedParams);
+    const queryString = queryParams.toString();
+
+    const { data } = await getAllListings('6', queryString);
     return (
         <div>
             <ProductContainer data={data} />
         </div>
     );
 }
+
+
 
 export default ProductPage;

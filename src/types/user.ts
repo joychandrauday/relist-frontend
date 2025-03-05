@@ -1,10 +1,16 @@
 export interface IUser {
-  userId: string;
+  id: string;
+  avatar: string | undefined;
   name: string;
+  accessToken: string;
   email: string;
-  hasShop?: boolean;
-  isActive?: boolean;
-  role: "user" | "admin";
+  role: string;
   iat?: number;
   exp?: number;
+}
+export interface IWishlist {
+  _id: string;
+  images: string[];
+  title: string;
+  price: number;
 }

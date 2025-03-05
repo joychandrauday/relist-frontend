@@ -2,6 +2,7 @@
 import { useUser } from '@/context/UserContext';
 import { removeFromWishlist } from '@/services/AuthService';
 import { getSingleUser } from '@/services/Profile';
+import { IProduct } from '@/types/product';
 import { XIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,7 +12,7 @@ import { HiCurrencyBangladeshi } from 'react-icons/hi';
 
 const WishListContainer = () => {
     const { user } = useUser();
-    const [wishlist, setWishlist] = useState([]);
+    const [wishlist, setWishlist] = useState<IProduct[]>([]);
 
     useEffect(() => {
         if (!user?.id) return; // Prevent API call if user is not available

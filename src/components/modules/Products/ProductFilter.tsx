@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getAllCategories } from "@/services/listings";
 
 const conditionOptions = [
     "Brand New", "Like New", "Excellent", "Very Good", "Good", "Fair", "Refurbished", "For Parts / Not Working"
@@ -12,10 +14,18 @@ const conditionOptions = [
 const districtsOfBangladesh = [
     "Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", "Chattogram", "Chuadanga", "Cox's Bazar", "Cumilla", "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", "Jhalokathi", "Jhenaidah", "Joypurhat", "Khagrachari", "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"
 ];
+// Define ICategory interface
+export interface ICategory {
+    _id: string;
+    name: string;
+    description: string;
+    icon: string;
+}
 
 const ProductFilter = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [categories, setCategories] = useState<ICategory[]>([])
 
     const [filters, setFilters] = useState({
         minPrice: searchParams.get('minPrice') || "",
@@ -24,9 +34,9 @@ const ProductFilter = () => {
         status: searchParams.get('status') || "",
         condition: searchParams.get('condition') || "",
         city: searchParams.get('city') || "",
+        category: searchParams.get('category') || "",
     });
 
-    // ফিল্টার পরিবর্তন হলে URL আপডেট হবে
     useEffect(() => {
         const queryParams = new URLSearchParams();
         Object.entries(filters).forEach(([key, value]) => {
@@ -35,8 +45,21 @@ const ProductFilter = () => {
 
         router.push(`?${queryParams.toString()}`);
     }, [filters, router]);
+    useEffect(() => {
+        // Define an async function to fetch data
+        const fetchCategories = async () => {
+            try {
+                // Assuming getAllCategories() returns a promise
+                const { data } = await getAllCategories();
+                setCategories(data);  // Set categories data to state
+            } catch (error) {
+                console.log('Failed to fetch categories'); // Handle error
+            }
+        };
 
-    // ইনপুট পরিবর্তন হ্যান্ডলিং
+        fetchCategories();  // Call the async function
+
+    }, []);
     const handleChange = (e) => {
         setFilters(prev => ({
             ...prev,
@@ -44,7 +67,6 @@ const ProductFilter = () => {
         }));
     };
 
-    // ফিল্টার রিসেট করলে URL ক্লিয়ার হবে
     const handleResetFilters = () => {
         setFilters({
             minPrice: "",
@@ -53,6 +75,7 @@ const ProductFilter = () => {
             status: "",
             condition: "",
             city: "",
+            category: "",
         });
         router.push("/products");
     };
@@ -73,32 +96,52 @@ const ProductFilter = () => {
                     />
                 </div>
 
-                {/* Min Price */}
-                <div className="flex flex-col">
-                    <Label htmlFor="minPrice">Min Price</Label>
-                    <Input
-                        id="minPrice"
-                        name="minPrice"
-                        type="number"
-                        value={filters.minPrice}
-                        onChange={handleChange}
-                        placeholder="Min Price"
+                <div className="flex flex-col ">
+                    <Label htmlFor="priceRange">Price Range</Label>
+                    <div className="flex justify-between">
+                        <span>৳ {filters.minPrice}</span>
+                        <span>৳ {filters.maxPrice}</span>
+                    </div>
+                    <input
+                        type="range"
+                        id="priceRange"
+                        name="priceRange"
+                        min="0"
+                        max="100000"
+                        step="1000"
+                        value={filters.minPrice || 0}
+                        onChange={(e) => setFilters(prev => ({ ...prev, minPrice: e.target.value }))}
+                        className="w-full mt-2"
+                    />
+                    <input
+                        type="range"
+                        id="priceRangeMax"
+                        name="priceRangeMax"
+                        min="0"
+                        max="100000"
+                        step="1000"
+                        value={filters.maxPrice || 100000}
+                        onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value }))}
+                        className="w-full mt-2"
                     />
                 </div>
 
-                {/* Max Price */}
+                {/* category  Dropdown */}
                 <div className="flex flex-col">
-                    <Label htmlFor="maxPrice">Max Price</Label>
-                    <Input
-                        id="maxPrice"
-                        name="maxPrice"
-                        type="number"
-                        value={filters.maxPrice}
+                    <Label htmlFor="category">Category</Label>
+                    <select
+                        id="category"
+                        name="category"
+                        value={filters.category}
                         onChange={handleChange}
-                        placeholder="Max Price"
-                    />
+                        className="border border-gray-300 p-2 rounded-md"
+                    >
+                        <option value="">Select Category</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>{category.name}</option>
+                        ))}
+                    </select>
                 </div>
-
                 {/* Status Dropdown */}
                 <div className="flex flex-col">
                     <Label htmlFor="status">Status</Label>

@@ -2,8 +2,17 @@
 import React from 'react';
 import ListingTable from './ListingTable';
 import TablePagination from './TablePagination';
+import { IProduct } from '@/types/product';
 
-const ManageListing = ({ listings }) => {
+const ManageListing = ({ listings }: {
+    listings: {
+        listings: IProduct[],
+        meta: {
+            totalPages: number
+        }
+    }
+
+}) => {
     console.log(listings);
     return (
         <div>

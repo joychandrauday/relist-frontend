@@ -1,31 +1,49 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { createOrder, createTransaction } from '@/services/cart';
-import { useUser } from '@/context/UserContext';
+import { useSession } from 'next-auth/react';
 
-const CheckoutForm = ({ product }) => {
-    const { user } = useUser()
-    const [formData, setFormData] = useState({
-        name: user?.name || '',
+// Define types for product and order info
+interface Product {
+    _id: string;
+    price: number;
+    title: string;
+    description: string;
+    userID: {
+        _id: string;
+        name: string;
+    };
+}
+
+interface FormData {
+    name: string;
+    address: string;
+    phone: string;
+}
+
+const CheckoutForm = ({ product }: { product: Product }) => {
+    const { data: session } = useSession();
+    const [formData, setFormData] = useState<FormData>({
+        name: session?.user?.name || '',
         address: '',
         phone: '',
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-
-    const handleChange = (e) => {
+    console.log(session?.user);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
         const orderInfo = {
-            user: user?.id,
+            user: session?.user?.id,
             product: {
                 productId: product._id,
                 quantity: 1, // Since it's a single product checkout
@@ -42,11 +60,12 @@ const CheckoutForm = ({ product }) => {
         };
 
         try {
+            console.log(orderInfo);
             const response = await createOrder(orderInfo);
             console.log(response);
             if (response.status) {
                 const transactionInfo = {
-                    buyerID: user?.id,
+                    buyerID: session?.user?.id,
                     sellerID: product.userID._id,
                     orderID: response.data.payment.customer_order_id,
                     itemID: product._id,
@@ -65,6 +84,7 @@ const CheckoutForm = ({ product }) => {
             setLoading(false);
         }
     };
+
     return (
         <div className="bg-white p-6 rounded-lg shadow-lg mt-8">
             <h2 className="text-2xl font-semibold mb-4">Shipping Information</h2>
@@ -74,8 +94,9 @@ const CheckoutForm = ({ product }) => {
                     <input
                         type="text"
                         name="name"
-                        value={formData.name}
+                        value={session?.user?.name}
                         onChange={handleChange}
+                        readOnly
                         required
                         className="w-full p-2 border border-gray-300 rounded-lg"
                     />

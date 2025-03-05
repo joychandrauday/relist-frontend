@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { cookies } from "next/headers";
 
-export const createOrder = async (order) => {
+export const createOrder = async (order: any) => {
   try {
     console.log(order);
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/orders`, {
@@ -34,17 +34,18 @@ export const verifyOrder = async (orderId: string) => {
 export const getSingleOrder = async (orderId: string) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/orders/single/orderId`,
+      `${process.env.NEXT_PUBLIC_BASE_API}/orders/single/${orderId}`,
       { method: "GET" }
     );
     const data = await res.json();
+    console.log(data);
     return data;
   } catch (error: any) {
     return Error(error);
   }
 };
 
-export const createTransaction = async (order) => {
+export const createTransaction = async (order: { buyerID: any; sellerID: any; orderID: any; itemID: any; status: string; }) => {
   try {
     console.log(order);
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/transactions`, {

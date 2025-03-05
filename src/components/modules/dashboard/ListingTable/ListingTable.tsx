@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { deleteListing, updateListing } from "@/services/listings";
+import { deleteListing, getAllCategories, updateListing } from "@/services/listings";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Swal from "sweetalert2"; // SweetAlert2 import
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { Avatar } from "@/components/ui/avatar";
+import { ICategory } from "../../Products/ProductFilter";
 
 // Interfaces
 interface Listing {
@@ -20,13 +22,17 @@ interface Listing {
     description: string;
     price: number;
     condition: string;
+    category: string;
     status: string;
+    images: string[];
     location: {
-        city: string;
+        city: string | undefined;
         state?: string;
         country: string;
     };
+
 }
+
 const conditionOptions = [
     "Brand New", "Like New", "Excellent", "Very Good", "Good", "Fair", "Refurbished", "For Parts / Not Working"
 ];
@@ -38,7 +44,22 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedListing, setSelectedListing] = useState<Partial<Listing> | null>(null);
     const [originalListing, setOriginalListing] = useState<Partial<Listing> | null>(null);
+    const [categories, setCategories] = useState<ICategory[]>([])
+    useEffect(() => {
+        // Define an async function to fetch data
+        const fetchCategories = async () => {
+            try {
+                // Assuming getAllCategories() returns a promise
+                const { data } = await getAllCategories();
+                setCategories(data);  // Set categories data to state
+            } catch (error) {
+                console.log('Failed to fetch categories'); // Handle error
+            }
+        };
 
+        fetchCategories();  // Call the async function
+
+    }, []);
     // Open Modal with Selected Listing Data
     const openEditModal = (listing: Listing) => {
         setSelectedListing({ ...listing });
@@ -64,18 +85,21 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
 
     // Handle location field changes
     const handleLocationChange = (
-        e: React.ChangeEvent<HTMLInputElement>,
+        e: React.ChangeEvent<HTMLElement>,
         field: 'city' | 'state' | 'country'
     ) => {
         if (!selectedListing) return;
-        setSelectedListing({
-            ...selectedListing,
-            location: {
-                ...selectedListing.location,
-                [field]: e.target.value,
-            },
-        });
-    };
+        if (e.target instanceof HTMLSelectElement) {
+            setSelectedListing({
+                ...selectedListing,
+                location: {
+                    ...selectedListing.location,
+                    [field]: e.target.value || "",
+                } as { city: string; state?: string; country: string },
+
+            });
+        }
+    }
 
     // Save changes
     const handleSave = async () => {
@@ -83,9 +107,27 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
 
         // Extract only modified fields
         const updatedFields: Partial<Listing> = {};
-        Object.keys(selectedListing).forEach((key) => {
-            if (selectedListing[key as keyof Listing] !== originalListing?.[key as keyof Listing]) {
-                updatedFields[key as keyof Listing] = selectedListing[key as keyof Listing];
+
+        // Iterate over selectedListing keys
+        (Object.keys(selectedListing) as (keyof Listing)[]).forEach((key) => {
+            const newValue = selectedListing[key];
+            const oldValue = originalListing?.[key];
+
+            if (key === 'location' && typeof newValue === 'object' && newValue !== null) {
+                // Handle nested properties inside 'location'
+                const location = newValue as { city?: string; state?: string; country: string };
+                const originalLocation = oldValue as { city?: string; state?: string; country: string } | undefined;
+
+                // Check if location has changed by comparing serialized versions
+                if (JSON.stringify(location) !== JSON.stringify(originalLocation)) {
+                    updatedFields[key] = {
+                        city: location.city !== undefined ? location.city : "", // Ensure city is set to an empty string if not defined
+                        state: location.state,
+                        country: location.country,
+                    };
+                }
+            } else if (newValue !== oldValue) {
+                updatedFields[key] = newValue as never; // Ensuring type consistency
             }
         });
 
@@ -103,6 +145,9 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
             toast.error("Failed to update listing.");
         }
     };
+
+
+
 
     // Handle Delete
     const handleDelete = async (id: string) => {
@@ -207,33 +252,54 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                                 <Label htmlFor="price">Price</Label>
                                 <Input name="price" type="number" value={selectedListing.price || ""} onChange={handleChange} />
                             </div>
-                            <div>
-                                <Label htmlFor="condition">Condition</Label>
-                                <select
-                                    name="condition"
-                                    value={selectedListing?.condition || ""}
-                                    onChange={(e) => setSelectedListing({ ...selectedListing, condition: e.target.value })}
-                                    className="input"
-                                >
-                                    <option value="">Select Condition</option>
-                                    {conditionOptions.map((condition) => (
-                                        <option key={condition} value={condition}>{condition}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <Label htmlFor="location-city">City</Label>
-                                <select
-                                    name="city"
-                                    value={selectedListing?.location?.city || ""}
-                                    onChange={(e) => handleLocationChange(e, 'city')}
-                                    className="input"
-                                >
-                                    <option value="">Select City</option>
-                                    {districtsOfBangladesh.map((district) => (
-                                        <option key={district} value={district}>{district}</option>
-                                    ))}
-                                </select>
+                            <div className="flex gap-2">
+
+                                {/* category dropdown */}
+                                <div>
+                                    <Label htmlFor="category">Category</Label>
+                                    <select
+                                        name="category"
+                                        value={selectedListing?.category || ""}
+                                        onChange={(e) => setSelectedListing({ ...selectedListing, category: e.target.value })}
+                                        className="input"
+                                    >
+                                        <option value="">Select Category</option>
+                                        {categories.map((category) => (
+                                            <option key={category._id} value={category.name}>
+                                                {category.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="condition">Condition</Label>
+                                    <select
+                                        name="condition"
+                                        value={selectedListing?.condition || ""}
+                                        onChange={(e) => setSelectedListing({ ...selectedListing, condition: e.target.value })}
+                                        className="input"
+                                    >
+                                        <option value="">Select Condition</option>
+                                        {conditionOptions.map((condition) => (
+                                            <option key={condition} value={condition}>{condition}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <Label htmlFor="location-city">City</Label>
+                                    <select
+                                        name="city"
+                                        value={selectedListing?.location?.city || ""}
+                                        onChange={(e) => handleLocationChange(e, 'city')}
+                                        className="input"
+                                    >
+                                        <option value="">Select City</option>
+                                        {districtsOfBangladesh.map((district) => (
+                                            <option key={district} value={district}>{district}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div>
                                 <Label htmlFor="location-state">State</Label>
@@ -245,7 +311,15 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                             </div>
                             <div>
                                 <Label htmlFor="status">Status</Label>
-                                <Select value={selectedListing.status || ""} onValueChange={(value) => handleChange({ target: { name: 'status', value } })}>
+                                <Select
+                                    value={selectedListing?.status || ""}
+                                    onValueChange={(value) =>
+                                        setSelectedListing((prev) => ({
+                                            ...prev!,
+                                            status: value,
+                                        }))
+                                    }
+                                >
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Select Status" />
                                     </SelectTrigger>
@@ -255,6 +329,7 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                                     </SelectContent>
                                 </Select>
                             </div>
+
                         </div>
                         <div className="flex justify-end gap-2">
                             <Button variant="outline" onClick={closeModal}>Cancel</Button>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
@@ -52,7 +53,7 @@ export const AnimatedTestimonials = ({
             const interval = setInterval(handleNext, 3000);
             return () => clearInterval(interval);
         }
-    }, [autoplay, isHovering]);
+    }, [autoplay, handleNext, isHovering]);
 
     const randomRotateY = () => {
         return Math.floor(Math.random() * 21) - 10;

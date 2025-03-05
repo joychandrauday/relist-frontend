@@ -2,9 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { FaFacebookF, FaTwitter, FaInstagram, FaUser, FaShoppingCart, FaHeart } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaInstagram, FaShoppingCart, FaHeart } from "react-icons/fa";
 import { WordRotate } from "../magicui/word-rotate";
-import { useUser } from "@/context/UserContext";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,18 +13,16 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { logout } from "@/services/AuthService";
+// import { logout } from "@/services/AuthService";
 import { LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { IUser } from "@/types/user";
 
-const Navbar = () => {
-    const { user, setIsLoading } = useUser();
-    const handleLogOut = () => {
-        logout()
-        window.location.reload();
-    }
-    console.log(user);
+const Navbar = ({ user }: { user?: IUser }) => {
+
     return (
         <nav className="w-full bg-white">
+
             {/* Top Bar */}
             <div className=" text-gray-600 text-sm py-1 flex justify-between items-center px-6 border-b">
                 <div className="flex gap-4 w-1/3">
@@ -95,7 +92,7 @@ const Navbar = () => {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         className="bg-red-500 cursor-pointer"
-                                        onClick={handleLogOut}
+                                        onClick={() => signOut()}
                                     >
                                         <LogOut />
                                         <span>Log Out</span>
@@ -116,7 +113,7 @@ const Navbar = () => {
                     )}
                 </div>
             </div>
-        </nav>
+        </nav >
     );
 };
 

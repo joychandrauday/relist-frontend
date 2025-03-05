@@ -1,11 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
+import { authOptions } from "@/utils/authOptions";
 import { jwtDecode } from "jwt-decode";
-import { cookies } from "next/headers";
+import { getServerSession } from "next-auth";
 
 export const getOrdersByUserId = async () => {
+    const session = await getServerSession(authOptions);
+
+
+
     try {
-        const accessToken = (await cookies()).get("accessToken")?.value;
+        const accessToken = session?.user?.accessToken;
         let decodedData = null;
 
         if (accessToken) {
@@ -24,8 +30,10 @@ export const getOrdersByUserId = async () => {
     }
 };
 export const getSalesByUserId = async () => {
+    const session = await getServerSession(authOptions);
+
     try {
-        const accessToken = (await cookies()).get("accessToken")?.value;
+        const accessToken = session?.user?.accessToken;
         let decodedData = null;
 
         if (accessToken) {
@@ -43,7 +51,8 @@ export const getSalesByUserId = async () => {
         return Error(error);
     }
 };
-export const updateTransactionStatus = async (transactionId, newStatus) => {
+export const updateTransactionStatus = async (transactionId: string, newStatus: { status: 'pending' | 'completed' }) => {
+
     try {
 
         const res = await fetch(

@@ -1,7 +1,8 @@
 import React from 'react';
 import OrderRow from './OrderRow';
+import { IOrder } from '@/types/orders';
 
-const OrderTable = ({ orders }) => {
+const OrderTable = ({ orders }: { orders: IOrder[] }) => {
     return (
         <div className="overflow-x-auto bg-white shadow-md rounded-none p-4">
             <table className="w-full border-collapse">

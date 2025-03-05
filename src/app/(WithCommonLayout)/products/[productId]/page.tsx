@@ -1,9 +1,14 @@
 
 import SIngleProductContainer from "@/components/modules/Products/SIngleProductContainer";
 import { getSingleProduct } from "@/services/listings";
+type SearchParams = {
+    productId: string;
+};
 
-const SingleProductPage = async ({ params }: { params: { productId: string } }) => {
-    const { productId } = await params;
+const SingleProductPage = async ({ params }: { params: Promise<SearchParams> }) => {
+
+    const resolvedParams = await params;
+    const { productId } = resolvedParams;
     const { data: product } = await getSingleProduct(productId);
 
     if (!product) {

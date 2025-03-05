@@ -1,5 +1,7 @@
-import { getCurrentUser } from "@/services/AuthService";
-import { IUser } from "@/types";
+
+import { IUser } from "@/types/user";
+import { authOptions } from "@/utils/authOptions";
+import { getServerSession } from "next-auth";
 import {
   createContext,
   Dispatch,
@@ -23,8 +25,10 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleUser = async () => {
-    const user = await getCurrentUser();
-    setUser(user);
+    // const user = await getCurrentUser();
+    const session = await getServerSession(authOptions)
+    console.log(session);
+    setUser(session?.user);
     setIsLoading(false);
   };
 
