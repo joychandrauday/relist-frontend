@@ -1,15 +1,19 @@
+// CommonLayout component
 import Footer from "@/components/shared/Footer";
 import Navbar from "@/components/shared/Navbar";
 import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 
-
 const CommonLayout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return null;
+  }
 
   return (
     <>
-      <Navbar user={session?.user} />
+      <Navbar user={session.user} /> {/* Pass user directly */}
       <main className="min-h-screen bg-white">{children}</main>
       <Footer />
     </>

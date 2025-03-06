@@ -12,8 +12,7 @@ const TransactionTable = ({ orders }: { orders: ITransaction[] }) => {
         }
         const res = await updateTransactionStatus(orderId, updateData);
         if (res.data.status === 'completed') {
-            const response = await updateListing({ status: 'sold' }, productID)
-            console.log(response);
+            await updateListing({ status: 'sold' }, productID)
             toast.success('Order updated successfully!!')
             window.location.reload()
             return;
@@ -22,9 +21,9 @@ const TransactionTable = ({ orders }: { orders: ITransaction[] }) => {
         window.location.reload()
     };
     return (
-        <div className="overflow-x-auto">
-            <table className="table-auto border-collapse w-full bg-white shadow-md rounded-none overflow-hidden">
-                <thead className="bg-gray-200 text-gray-700">
+        <div className="overflow-x-auto sm:max-w-full">
+            <table className="table-auto border-collapse w-full bg-transparent shadow-md rounded-none overflow-hidden">
+                <thead className="border bg-transparent text-gray-300">
                     <tr>
                         <th className="border px-4 py-2">Order ID</th>
                         <th className="border px-4 py-2">Buyer</th>
@@ -70,7 +69,7 @@ const TransactionTable = ({ orders }: { orders: ITransaction[] }) => {
                         ))
                     ) : (
                         <tr>
-                            <td className="text-center py-4 text-gray-500">
+                            <td className="text-center py-4 bg-transparent">
                                 No transactions found
                             </td>
                         </tr>

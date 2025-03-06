@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,7 +60,7 @@ const ProductFilter = () => {
         fetchCategories();  // Call the async function
 
     }, []);
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFilters(prev => ({
             ...prev,
             [e.target.name]: e.target.value
@@ -81,7 +81,7 @@ const ProductFilter = () => {
     };
 
     return (
-        <div className="p-6 bg-white shadow-lg rounded-none mb-6">
+        <div className="p-6 shadow-lg rounded-none mb-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
 
                 {/* Search Input */}
@@ -138,7 +138,7 @@ const ProductFilter = () => {
                     >
                         <option value="">Select Category</option>
                         {categories.map((category) => (
-                            <option key={category.id} value={category.id}>{category.name}</option>
+                            <option key={category._id} value={category.name}>{category.name}</option>
                         ))}
                     </select>
                 </div>

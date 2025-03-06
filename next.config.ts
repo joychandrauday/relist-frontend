@@ -9,8 +9,15 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/dklikxmpm/**",
       },
+      {
+        protocol: "https",
+        hostname: "www.freepnglogos.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
+  reactStrictMode: true,
 };
 
 export default nextConfig;

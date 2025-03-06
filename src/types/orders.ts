@@ -4,7 +4,10 @@ export type IOrder = {
     _id: string;
     user: string; // reference to the user who placed the order
     product: {
-        productId: string;
+        productId: {
+            _id: string;
+            title: string;
+        };
         quantity: number;
         price: number; // price per unit of the product
         totalPrice: number; // total price for this product (quantity * price)
@@ -23,7 +26,7 @@ export type IOrder = {
         bank_status: string,
         date_time: string,
     },
-    estimatedDeliveryDate?: Date; // optional, estimated delivery date
+    estimatedDeliveryDate?: Date;
 };
 
 export interface ITransaction {

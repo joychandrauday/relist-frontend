@@ -17,7 +17,6 @@ const SIngleProductContainer = ({ product }: { product: IProduct }) => {
                 listingId: product._id  // Sending as required
             };
 
-            console.log("Sending payload:", payload);
 
             const res = await addToWishlist(payload);
             if (res.success) {

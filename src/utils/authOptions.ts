@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
+// ✅ TypeScript টাইপ এক্সটেন্ড করা হচ্ছে
 declare module "next-auth" {
     export interface Session {
         user?: {
@@ -11,7 +12,7 @@ declare module "next-auth" {
             email: string;
             accessToken: string;
             avatar: string;
-            role: string; // Added role to session
+            role: string;
         };
     }
 
@@ -20,17 +21,15 @@ declare module "next-auth" {
         name: string;
         email: string;
         token: string;
-        avatar: string; // Added avatar field to User
-        role: string; // Added role field to User
+        avatar: string;
+        role: string;
     }
 
     interface JWT {
         id: string;
         accessToken: string;
         avatar: string;
-        name: string;
-        email: string;
-        role: string; // Added role field to JWT
+        role: string;
     }
 }
 
@@ -45,37 +44,33 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
         }),
         CredentialsProvider({
-            name: "credentials",
+            name: "Credentials",
             credentials: {
                 email: { label: "Email", type: "email", placeholder: "user@example.com" },
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
                 try {
-                    const payload = {
-                        email: credentials?.email,
-                        password: credentials?.password,
-                    };
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/login`, {
+                    const res = await fetch(`${process.env.SERVER_API}/auth/login`, {
                         method: 'POST',
                         headers: {
                             "Content-Type": "application/json"
                         },
-                        body: JSON.stringify(payload),
+                        body: JSON.stringify(credentials),
                     });
 
                     const user = await res.json();
+
                     if (!res.ok) throw new Error(user.message || "Login failed");
 
-                    // Ensure the API returns avatar and role
                     return {
                         id: user.data.user._id,
                         name: user.data.user.name,
                         email: user.data.user.email,
-                        avatar: user.data.user.avatar || "", // Make sure it's an empty string if undefined
                         token: user.data.accessToken,
-                        role: user.data.user.role,
-                    } as User;
+                        avatar: user.data.user.avatar, // ✅ Avatar যোগ করা হলো
+                        role: user.data.user.role, // ✅ Role যোগ করা হলো
+                    } as User; // ✅ Type Assertion
                 } catch (error) {
                     throw new Error((error as Error).message || "Login failed");
                 }
@@ -94,25 +89,21 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.accessToken = user.token;
                 token.id = user.id;
-                token.avatar = user.avatar;
-                token.name = user.name;
-                token.email = user.email;
-                token.role = user.role;
+                token.avatar = user.avatar; // ✅ Avatar সংযুক্ত করা হলো
+                token.role = user.role; // ✅ Role সংযুক্ত করা হলো
             }
+
             return token;
         },
         async session({ session, token }) {
             if (!session.user) {
-                session.user = { id: "", name: "", email: "", accessToken: "", avatar: '', role: "" };
+                session.user = { id: "", name: "", email: "", accessToken: "", avatar: "", role: "" };
             }
 
             session.user.id = String(token.id ?? '');
             session.user.accessToken = String(token.accessToken ?? '');
-            session.user.avatar = String(token.avatar ?? '');
-            session.user.name = String(token.name ?? '');
-            session.user.email = String(token.email ?? '');
-            session.user.role = String(token.role ?? '');
-
+            session.user.avatar = String(token.avatar ?? ''); // ✅ Avatar সংযুক্ত করা হলো
+            session.user.role = String(token.role ?? ''); // ✅ Role সংযুক্ত করা হলো
             return session;
         }
     }

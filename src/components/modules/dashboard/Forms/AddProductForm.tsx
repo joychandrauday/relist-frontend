@@ -102,11 +102,9 @@ const AddProduct = () => {
             };
 
             const response = await addListing(listingData);
-            console.log(response, 'response error');
             if (response.success) {
                 toast.success('Product added successfully!');
                 reset();
-                window.location.reload();
             } else {
                 throw new Error('Failed to add product');
             }
@@ -118,7 +116,7 @@ const AddProduct = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 bg-white shadow-md rounded-md space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 bg-white shadow-md rounded-md sm:min-w-[100vw] space-y-4">
             <h2 className="text-xl font-semibold">Add Product</h2>
 
             <div>
@@ -133,7 +131,7 @@ const AddProduct = () => {
                 {errors.description && <span className="text-red-500">{errors.description.message}</span>}
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
                 <div>
                     <Label>Price (BDT)</Label>
                     <Input type="number" {...register("price", { required: "Price is required" })} />
@@ -154,7 +152,7 @@ const AddProduct = () => {
                     <Label>Category</Label>
                     <select {...register("category", { required: "Category is required" })} className="w-full p-2 border rounded-md">
                         {categories.map(cat => (
-                            <option key={cat._id} value={cat._id}>{cat.name}</option>
+                            <option key={cat._id} value={cat.name}>{cat.name}</option>
                         ))}
                     </select>
                     {errors.category && <span className="text-red-500">{errors.category.message}</span>}

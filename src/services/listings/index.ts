@@ -2,6 +2,7 @@
 "use server";
 import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
 
 // get all products
 export const getAllListings = async (
@@ -11,7 +12,7 @@ export const getAllListings = async (
     try {
 
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/listings/all?limit=${limit}&${query}`
+            `${process.env.SERVER_API}/listings/all?limit=${limit}&${query}`
         );
         const data = await res.json();
         return data;
@@ -25,7 +26,7 @@ export const getAllListingsByUser = async (page?: string, limit?: string) => {
 
     try {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/listings/user?limit=${limit}&page=${page}`,
+            `${process.env.SERVER_API}/listings/user?limit=${limit}&page=${page}`,
             {
                 headers: {
                     authorization: `${session?.user?.accessToken}`,
@@ -44,7 +45,7 @@ export const getAllListingsByUser = async (page?: string, limit?: string) => {
 export const getSingleProduct = async (productId: string) => {
     try {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/listings/${productId}`,
+            `${process.env.SERVER_API}/listings/${productId}`,
         );
         const data = await res.json();
         return data;
@@ -59,7 +60,7 @@ export const addListing = async (listingData: any): Promise<any> => {
     try {
 
         // Send the data as JSON in the request body
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/listings`, {
+        const res = await fetch(`${process.env.SERVER_API}/listings`, {
             method: "POST",
             body: JSON.stringify(listingData),  // Send data as JSON
             headers: {
@@ -67,7 +68,7 @@ export const addListing = async (listingData: any): Promise<any> => {
                 authorization: `${session?.user?.accessToken}`,
             },
         });
-
+        revalidatePath(`/user/dashboard`);
         return res.json();  // Return the response as JSON
     } catch (error: any) {
         return Error(error);
@@ -83,7 +84,7 @@ export const updateListing = async (
     try {
         const session = await getServerSession(authOptions);
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/listings/${productId}`,
+            `${process.env.SERVER_API}/listings/${productId}`,
             {
                 method: "PUT",
                 headers: {
@@ -93,6 +94,7 @@ export const updateListing = async (
                 body: JSON.stringify(productData),
             }
         );
+        revalidatePath(`/user/dashboard`);
         return res.json();
     } catch (error: any) {
         return Error(error);
@@ -104,7 +106,7 @@ export const deleteListing = async (
     try {
         const session = await getServerSession(authOptions);
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/listings/${productId}`,
+            `${process.env.SERVER_API}/listings/${productId}`,
             {
                 method: "DELETE",
                 headers: {
@@ -112,6 +114,7 @@ export const deleteListing = async (
                 },
             }
         );
+        revalidatePath(`/user/dashboard`);
         return res.json();
     } catch (error: any) {
         return Error(error);
@@ -122,9 +125,10 @@ export const deleteListing = async (
 export const getAllCategories = async () => {
     try {
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_API}/category`,
+            `${process.env.SERVER_API}/category`,
         );
         const data = await res.json();
+        revalidatePath(`/user/dashboard`);
         return data;
     } catch (error: any) {
         return Error(error.message);

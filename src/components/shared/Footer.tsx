@@ -3,8 +3,8 @@ import React from 'react';
 
 const Footer = () => {
     return (
-        <div className="bg-gray-800 text-white py-8">
-            <div className="container mx-auto px-4">
+        <div className="bg-gray-800 text-white py-8 mt-12">
+            <div className="container mx-auto pt-12">
                 {/* Grid layout: 1 column on small screens, 2 columns on medium, 4 columns on large */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* First Row */}

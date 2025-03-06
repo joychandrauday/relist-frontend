@@ -1,4 +1,5 @@
 'use client'
+import LoadingPage from "@/components/utils/Loading";
 import { getSingleOrder, verifyOrder } from "@/services/cart";
 import React, { useEffect, useState } from "react";
 
@@ -53,7 +54,6 @@ const UserPayment = ({ orderId }: { orderId?: string }) => {
             try {
                 setLoading(true);
                 const response: OrderStatusResponse = await verifyOrder(orderId);
-                console.log("Order Status Response:", response);
 
                 setOrderStatus(response);
 
@@ -76,9 +76,8 @@ const UserPayment = ({ orderId }: { orderId?: string }) => {
         fetchOrderStatus();
     }, [orderId]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <LoadingPage />;
     if (error) return <p className="text-red-500">{error}</p>;
-    console.log(product);
     return (
         <div className="bg-white p-6 rounded-lg shadow-lg mt-8 max-w-3xl mx-auto">
             <h2 className="text-2xl font-semibold mb-4">Payment Details</h2>

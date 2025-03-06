@@ -15,7 +15,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-// import { loginUser } from "@/services/AuthService";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 
@@ -29,15 +28,24 @@ export default function LoginForm() {
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         setIsSubmitting(true);
         try {
-            await signIn("credentials", data);
-            toast.success('User log in Successfull!')
-            if (redirect) {
-                router.push(redirect);
+            const result = await signIn("credentials", {
+                ...data,
+                redirect: false,
+            });
+
+            if (result?.error) {
+                toast.error("Login failed. Please check your credentials.");
             } else {
-                router.push("/");
+                toast.success("User login successful!");
+                if (redirect) {
+                    router.push(redirect);
+                } else {
+                    router.push("/");
+                }
             }
         } catch (err) {
             console.error(err);
+            toast.error("Something went wrong. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -47,7 +55,7 @@ export default function LoginForm() {
         <div className="border border-gray-300 rounded-xl flex-grow max-w-md w-full p-5 shadow-lg bg-white">
             <div className="flex items-center space-x-4 mb-4">
                 <Image
-                    src={'/relisticon.png'}
+                    src={"/relisticon.png"}
                     width={80}
                     height={80}
                     alt="relist logo"
@@ -72,7 +80,6 @@ export default function LoginForm() {
                                         type="email"
                                         placeholder="Enter your email"
                                         {...field}
-                                        value={field.value || ""}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -92,7 +99,6 @@ export default function LoginForm() {
                                         type="password"
                                         placeholder="Enter your password"
                                         {...field}
-                                        value={field.value || ""}
                                     />
                                 </FormControl>
                                 <FormMessage />

@@ -32,7 +32,6 @@ const CheckoutForm = ({ product }: { product: Product }) => {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    console.log(session?.user);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -60,9 +59,8 @@ const CheckoutForm = ({ product }: { product: Product }) => {
         };
 
         try {
-            console.log(orderInfo);
             const response = await createOrder(orderInfo);
-            console.log(response);
+
             if (response.status) {
                 const transactionInfo = {
                     buyerID: session?.user?.id,
@@ -72,8 +70,7 @@ const CheckoutForm = ({ product }: { product: Product }) => {
                     status: 'pending',
                 };
 
-                const transactionResponse = await createTransaction(transactionInfo);
-                console.log(transactionResponse);
+                await createTransaction(transactionInfo);
                 router.push(response.data.payment.checkout_url);
             } else {
                 alert('Error processing your order.');

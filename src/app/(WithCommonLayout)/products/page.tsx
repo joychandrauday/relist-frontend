@@ -2,15 +2,15 @@ import ProductContainer from '@/components/modules/Products/ProductContainer';
 import { getAllListings } from '@/services/listings';
 import React from 'react';
 type SearchParams = {
-    [key: string]: string | string[] | undefined;
+    [key: string]: string | string[];
 };
 
 const ProductPage = async ({
     searchParams,
 }: {
-    searchParams: Promise<SearchParams>; // SearchParams কে Promise হিসাবে ধরতে হবে
+    searchParams: Promise<SearchParams>;
 }) => {
-    const resolvedParams = await searchParams; // searchParams কে await করুন
+    const resolvedParams = await searchParams;
     const sanitizedParams = Object.fromEntries(
         Object.entries(resolvedParams).map(([key, value]) => [
             key,
@@ -23,7 +23,7 @@ const ProductPage = async ({
 
     const { data } = await getAllListings('6', queryString);
     return (
-        <div>
+        <div className='pt-20'>
             <ProductContainer data={data} />
         </div>
     );

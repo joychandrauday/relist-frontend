@@ -3,11 +3,12 @@ import OrderRow from './OrderRow';
 import { IOrder } from '@/types/orders';
 
 const OrderTable = ({ orders }: { orders: IOrder[] }) => {
+    console.log(orders);
     return (
-        <div className="overflow-x-auto bg-white shadow-md rounded-none p-4">
-            <table className="w-full border-collapse">
+        <div className="overflow-x-scroll  bg-transparent shadow-md rounded-none p-4">
+            <table className="w-full table-auto border-collapse">
                 <thead>
-                    <tr className="bg-gray-200">
+                    <tr className="border">
                         <th className="p-2 border">Order ID</th>
                         <th className="p-2 border">Product</th>
                         <th className="p-2 border">Quantity</th>
@@ -19,7 +20,7 @@ const OrderTable = ({ orders }: { orders: IOrder[] }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {orders.length > 0 ?
+                    {orders?.length > 0 ?
                         (orders?.map((order) => (
                             <OrderRow key={order._id} order={order} />
                         )))

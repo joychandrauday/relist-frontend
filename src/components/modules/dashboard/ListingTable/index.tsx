@@ -13,11 +13,10 @@ const ManageListing = ({ listings }: {
     }
 
 }) => {
-    console.log(listings);
     return (
-        <div>
+        <div className=' px-4'>
             <ListingTable listings={listings?.listings} />
-            <TablePagination totalPage={listings.meta.totalPages} />
+            <TablePagination totalPage={listings?.meta.totalPages} />
         </div>
     );
 }

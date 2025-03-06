@@ -1,9 +1,20 @@
 "use client";
+import { IProduct } from "@/types/product";
 import ProductCard from "./ProductCard";
 import ProductFilter from "./ProductFilter";
 import ProductPaginate from "./ProductPaginate";
 
-const ProductContainer = ({ data }) => {
+interface Meta {
+    totalPages: number;
+}
+
+interface Prop {
+    data: {
+        listings: IProduct[];
+        meta: Meta;
+    };
+}
+const ProductContainer = ({ data }: { data: Prop['data'] }) => {
     return (
         <div className="wrap">
             <ProductFilter />

@@ -7,7 +7,7 @@ import { FieldValues } from "react-hook-form";
 
 export const registerUser = async (userData: FieldValues) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/register`, {
+    const res = await fetch(`${process.env.SERVER_API}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const registerUser = async (userData: FieldValues) => {
 
 export const loginUser = async (userData: FieldValues) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/auth/login`, {
+    const res = await fetch(`https://relist-backend.vercel.app/api/v1/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,8 +66,7 @@ export const addToWishlist = async (productId: any) => {
 
     if (accessToken) {
       decodedData = await jwtDecode(accessToken);
-      console.log(decodedData.id);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/${decodedData.id}/wishlist`, {
+      const res = await fetch(`${process.env.SERVER_API}/users/${decodedData.id}/wishlist`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,7 +90,7 @@ export const removeFromWishlist = async (productId: any) => {
 
     if (accessToken) {
       decodedData = await jwtDecode(accessToken);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/${decodedData.id}/wishlist`, {
+      const res = await fetch(`${process.env.SERVER_API}/users/${decodedData.id}/wishlist`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +98,6 @@ export const removeFromWishlist = async (productId: any) => {
         body: JSON.stringify({ listingId: productId }),
       });
       const result = await res.json();
-      console.log(result);
       return result;
     } else {
       return null;

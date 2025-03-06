@@ -4,8 +4,7 @@
 
 export const createOrder = async (order: any) => {
   try {
-    console.log(order);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/orders`, {
+    const res = await fetch(`${process.env.SERVER_API}/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -14,7 +13,6 @@ export const createOrder = async (order: any) => {
     });
     return await res.json();
   } catch (error: any) {
-    console.log(error);
     return Error(error);
   }
 };
@@ -22,7 +20,7 @@ export const createOrder = async (order: any) => {
 export const verifyOrder = async (orderId: string) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/orders/verify/payment?sp_trxn_id=${orderId}`,
+      `${process.env.SERVER_API}/orders/verify/payment?sp_trxn_id=${orderId}`,
       { method: "GET" }
     );
     return await res.json();
@@ -34,11 +32,10 @@ export const verifyOrder = async (orderId: string) => {
 export const getSingleOrder = async (orderId: string) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/orders/single/${orderId}`,
+      `${process.env.SERVER_API}/orders/single/${orderId}`,
       { method: "GET" }
     );
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error: any) {
     return Error(error);
@@ -47,8 +44,7 @@ export const getSingleOrder = async (orderId: string) => {
 
 export const createTransaction = async (order: { buyerID: any; sellerID: any; orderID: any; itemID: any; status: string; }) => {
   try {
-    console.log(order);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/transactions`, {
+    const res = await fetch(`${process.env.SERVER_API}/transactions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +54,6 @@ export const createTransaction = async (order: { buyerID: any; sellerID: any; or
     const data = await res.json();
     return data;
   } catch (error: any) {
-    console.log(error);
     return Error(error);
   }
 };

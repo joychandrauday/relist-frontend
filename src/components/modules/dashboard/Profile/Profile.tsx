@@ -1,17 +1,45 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable prefer-const */
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useUser } from "@/context/UserContext";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { getSingleUserProfile, updateUser } from "@/services/Profile";
+
+interface UserProfile {
+    id: string;
+    name: string;
+    avatar: string;
+    email: string;
+}
+
+interface UpdatePayload {
+    name?: string;
+    avatar?: string;
+}
 
 export default function Profile() {
-    const { user, setUser } = useUser(); // Ensure setUser exists in context
+    const { data: session } = useSession();
     const [showModal, setShowModal] = useState(false);
-    const [updatedName, setUpdatedName] = useState(user?.name || "");
+    const [updatedName, setUpdatedName] = useState(session?.user?.name || "");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
+
+    const [userdb, setUserdb] = useState<UserProfile | null>(null);
+
+    useEffect(() => {
+        if (!session?.user?.id) return;
+
+        async function fetchUser() {
+            try {
+                if (!session?.user?.id) return;
+                const res = await getSingleUserProfile(session?.user?.id);
+                setUserdb(res.data);
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        }
+        fetchUser();
+    }, [session?.user?.id]);
 
     // Function to upload image to Cloudinary
     const uploadImage = async (file: File) => {
@@ -37,18 +65,18 @@ export default function Profile() {
 
     // Handle update (either name or image)
     const handleUpdate = async () => {
-        if (!user?.id) {
+        if (!session?.user?.id) {
             alert("User ID is missing!");
             return;
         }
 
         try {
             setUploading(true);
-            let avatarUrl = user?.avatar; // Default to existing avatar
-            let payload: Partial<{ name: string; avatar: string }> = {};
+            let avatarUrl = userdb?.avatar
+            const payload: UpdatePayload = {};
 
             // If name is changed, add to payload
-            if (updatedName && updatedName !== user.name) {
+            if (updatedName && updatedName !== session?.user.name) {
                 payload.name = updatedName;
             }
 
@@ -65,34 +93,27 @@ export default function Profile() {
             }
 
             // Send update request
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/${user.id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) throw new Error("Failed to update user.");
-            const updatedUser = await res.json();
-
-            // Update user state
-            setUser({
-                ...user,
-                ...updatedUser.data, // Merge updated data
-            });
+            await updateUser(payload, session?.user.id);
+            window.location.reload();
             toast.success("Profile updated successfully!");
-        } catch (error: any) {
-            alert(error.message);
+
+        } catch (err) {
+            if (err instanceof Error) {
+                toast.error(`Failed to verify order. ${err.message}`);
+            } else {
+                toast.error("Failed to verify order. An unknown error occurred.");
+            }
         } finally {
             setUploading(false);
         }
     };
 
     return (
-        <div className="max-w-md mx-auto bg-white shadow-md rounded-lg p-6">
+        <div className="max-w-md mx-auto backdrop-blur-lg border-2 border-gray-300 shadow-md rounded-lg p-6 my-24">
             {/* Profile Picture */}
             <div className="relative w-32 h-32 mx-auto cursor-pointer" onClick={() => setShowModal(true)}>
                 <Image
-                    src={user?.avatar ? user.avatar : "/default-avatar.png"}
+                    src={userdb?.avatar || "/relisticon.png"}
                     alt="User Avatar"
                     width={128}
                     height={128}
@@ -101,8 +122,8 @@ export default function Profile() {
             </div>
 
             {/* User Info */}
-            <h2 className="text-xl font-semibold text-center mt-4">{user?.name || "Unknown User"}</h2>
-            <p className="text-gray-500 text-center">{user?.email || "No email available"}</p>
+            <h2 className="text-xl font-semibold text-center mt-4">{userdb?.name || session?.user?.name || "Unknown User"}</h2>
+            <p className="text-gray-500 text-center">{session?.user?.email || "No email available"}</p>
 
             {/* Update Name */}
             <div className="mt-4">
@@ -139,7 +160,7 @@ export default function Profile() {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <div className="bg-white p-4 rounded-lg">
                         <Image
-                            src={user?.avatar ? user.avatar : "/default-avatar.png"}
+                            src={userdb?.avatar || "/relisticon.png"}
                             alt="Profile Image"
                             width={300}
                             height={300}

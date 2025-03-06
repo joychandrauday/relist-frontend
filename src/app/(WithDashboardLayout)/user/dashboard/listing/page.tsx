@@ -14,7 +14,7 @@ const ListingPage = async ({
     const { data: listings } = await getAllListingsByUser(page);
 
     return (
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 pt-20">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-xl font-semibold">Manage Listings({listings?.listings?.length})</h1>
                 <Link href={'#addListing'}>

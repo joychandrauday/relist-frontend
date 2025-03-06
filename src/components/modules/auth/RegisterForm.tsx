@@ -26,7 +26,6 @@ export default function RegisterForm() {
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         setIsSubmitting(true);
         try {
-            console.log(data);
             const res = await registerUser(data)
             if (res.success) {
                 toast.success('User Registration Success!')

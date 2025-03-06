@@ -1,9 +1,9 @@
 'use client'
-import { useUser } from '@/context/UserContext';
 import { removeFromWishlist } from '@/services/AuthService';
-import { getSingleUser } from '@/services/Profile';
+import { getSingleUserProfile } from '@/services/Profile';
 import { IProduct } from '@/types/product';
 import { XIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -11,16 +11,16 @@ import { HiCurrencyBangladeshi } from 'react-icons/hi';
 
 
 const WishListContainer = () => {
-    const { user } = useUser();
+    const { data: session } = useSession();
     const [wishlist, setWishlist] = useState<IProduct[]>([]);
 
     useEffect(() => {
-        if (!user?.id) return; // Prevent API call if user is not available
+        if (!session?.user?.id) return; // Prevent API call if user is not available
 
         const fetchUserData = async () => {
             try {
-                const userData = await getSingleUser(user.id);
-                console.log("Fetched User Data:", userData);
+                if (!session?.user?.id) return; // Prevent API call if user is not available
+                const userData = await getSingleUserProfile(session?.user.id);
 
                 // Ensure correct path to wishlist
                 if (userData?.data?.wishlist) {
@@ -32,7 +32,7 @@ const WishListContainer = () => {
         };
 
         fetchUserData();
-    }, [user?.id]);
+    }, [session?.user?.id]);
 
     const handleRemoveItem = async (itemId: string) => {
         try {

@@ -61,11 +61,11 @@ export const AnimatedTestimonials = ({
 
     return (
         <div
-            className="max-w-sm md:max-w-5xl mx-auto antialiased font-sans px-4 md:px-8 lg:px-12 py-20"
+            className="max-w-sm md:max-w-7xl mx-auto antialiased font-sans px-4 md:px-8 bg-transparent py-32"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
         >
-            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-20">
+            <div className="relative grid grid-cols-1 md:grid-cols-2 md:gap-20">
                 <div>
                     <div className="relative h-80 w-full z-40">
                         <AnimatePresence>
@@ -104,8 +104,9 @@ export const AnimatedTestimonials = ({
                                         width={500}
                                         height={500}
                                         draggable={false}
-                                        className="h-full w-full rounded-3xl object-cover object-center z-40"
+                                        className="h-full w-full rounded-3xl object-cover object-center z-50"
                                     />
+
                                 </motion.div>
                             ))}
                         </AnimatePresence>

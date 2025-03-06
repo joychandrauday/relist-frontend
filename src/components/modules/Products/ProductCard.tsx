@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { HiCurrencyBangladeshi } from "react-icons/hi";
+import { IProduct } from "@/types/product";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product }: { product: IProduct }) => {
     return (
         <Card className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 pt-0">
             {/* Product Images */}
@@ -53,7 +54,7 @@ const ProductCard = ({ product }) => {
                 </div>
 
                 {/* Status */}
-                <Badge variant={product.status === "available" ? "success" : "destructive"} className="mt-2">
+                <Badge variant={product.status === "available" ? "secondary" : "destructive"} className="mt-2">
                     {product.status}
                 </Badge>
 

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const LoadingPage = () => {
     return (
-        <div className="w-[90%] mx-auto min-h-screen flex items-center justify-center">
+        <div className="w-[90%] mx-auto min-h-[50vh] flex items-center justify-center">
             <Image
                 src="/loading.gif"
                 width={100}
