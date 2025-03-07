@@ -18,7 +18,7 @@ export default async function RootLayout({
     <html lang="en" data-theme="light">
       <body>
         <SessionProviders>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <div>
               <main className="min-h-screen">{children}</main>
               <Toaster />

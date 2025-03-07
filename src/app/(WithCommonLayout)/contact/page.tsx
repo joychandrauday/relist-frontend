@@ -41,9 +41,9 @@ const Contact: React.FC = () => {
 
                 {/* Left Section */}
                 <div className="lg:w-1/2">
-                    <h1 className="text-3xl font-bold text-center lg:text-right mb-4 text-white">Contact Me</h1>
+                    <h1 className="text-3xl font-bold text-center lg:text-right mb-4 text-white">Contact Us</h1>
                     <p className="text-center lg:text-right text-gray-400 mb-8">
-                        Feel free to reach out to me via email or through my social media.
+                        Feel free to reach out to Us via email or through my social media.
                     </p>
                     <div className="flex flex-wrap gap-4 items-center py-6 justify-center lg:justify-end">
                         <a href="https://github.com/joychandrauday" target="_blank" rel="noopener noreferrer">

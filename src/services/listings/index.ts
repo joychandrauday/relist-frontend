@@ -126,6 +126,9 @@ export const getAllCategories = async () => {
     try {
         const res = await fetch(
             `${process.env.SERVER_API}/category`,
+            {
+                method: "GET"
+            }
         );
         const data = await res.json();
         revalidatePath(`/user/dashboard`);

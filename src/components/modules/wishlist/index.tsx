@@ -47,7 +47,7 @@ const WishListContainer = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <div className="p-6  min-h-screen">
             <h2 className="text-2xl font-bold mb-4">My Wishlist</h2>
             <div className="mx-auto container">
                 {wishlist.length > 0 ? (
