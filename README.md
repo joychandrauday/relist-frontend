@@ -1,23 +1,28 @@
-# Joy Chandra Uday - Portfolio
+# RE-LIST - Secondhand eCommerce Platform
 
-Welcome to the personal portfolio of **Joy Chandra Uday**, a passionate MERN stack developer. This portfolio website showcases my projects, skills, and provides a glimpse into my journey as a developer. Built with Next.js, this website is optimized for performance, modern design, and an engaging user experience.
-
-Explore the live portfolio here: [Live Portfolio Website](https://joychandrauday.vercel.app/)
+Welcome to **RE-LIST**, a modern and user-friendly eCommerce platform designed specifically for buying and selling secondhand items. Whether you’re looking to declutter your space or find great deals on pre-owned products, RE-LIST makes the process seamless and efficient. Built using the power of **Next.js**, RE-LIST offers a fast, responsive, and scalable solution for anyone interested in a sustainable and budget-friendly shopping experience.
 
 ## Features
-- 🌟 **Project Showcase**: Explore my featured projects built using technologies like React, Node.js, Express, MongoDB, and more.
-- 👨‍💻 **About Me**: Learn about my background, skills, and the technologies I specialize in.
-- 📧 **Contact**: Get in touch with me for collaboration, feedback, or job opportunities.
-- 🖥 **Responsive Design**: Optimized for both mobile and desktop users.
-- 🚀 **Fast Loading**: Built for speed and performance with Next.js, ensuring quick load times.
-- 🔐 **SEO Optimized**: Content is optimized for search engines to improve visibility.
+
+- **User Authentication:** Secure user login and registration via email or social media logins.
+- **Product Listings:** Easy-to-create listings for sellers with options to upload product images, descriptions, and prices.
+- **Product Search and Filters:** Browse through products by categories, brands, price range, and condition (new or used).
+- **Product Reviews and Ratings:** Users can rate and leave feedback on products they have purchased.
+- **Responsive Design:** Mobile-first design with a seamless experience across all devices.
+- **Wishlist and Cart:** Users can add items to their wishlist or shopping cart for easy checkout.
+- **Order Management:** Sellers can track their orders and update the status of their listed items.
+- **SEO Optimized:** Built-in SEO optimizations for better visibility on search engines.
+- **Payment Integration:** Integration with payment gateways (optional, depending on the setup) for secure transactions.
+- **Admin Dashboard:** Admins can manage users, products, and orders, ensuring the platform runs smoothly.
 
 ## Tech Stack
 
-- **Frontend Framework**: Next.js (React.js)
-- **Styling**: Tailwind CSS
-- **Deployment Platform**: Vercel
-- **Additional Tools**: ShadcnUI for UI components, TypeScript for type safety
+- **Frontend:** Next.js, React, Tailwind CSS, and DaisyUI for component styling.
+- **Backend:** Node.js, Express.js, and MongoDB, Mongoose for database management.
+- **Authentication:** NEXT-AUTH Authentication or JWT-based authentication.
+- **Payment Integration:** Stripe (or other options) for secure online payments.
+- **State Management:** React Context API and custom hooks for global state management.
+- **Hosting:** Vercel (for Next.js deployment), MongoDB Atlas (for the database), and Firebase (for authentication).
 
 ## Getting Started
 
@@ -35,11 +40,11 @@ Ensure the following are installed on your system:
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/joychandrauday/portfolio-nexus.git
+    git clone https://github.com/joychandrauday/relist-frontend.git
     ```
 2.  Navigate to the project directory:
     ```bash
-    cd portfolio-next
+    cd relist-frontend
     ```
 3.  Install dependencies:
     ```bash
@@ -60,17 +65,24 @@ Ensure the following are installed on your system:
 ### Key Pages
 
 1. **Home Page**
-   - Showcases the introduction, name, and title.
-   - Displays recent projects with links to their live demos and GitHub repositories.
+   - Introduction to **RE-LIST** with a welcoming message and platform overview.
+   - Showcases key features of the platform, such as recent product listings, user reviews, and a quick search bar for browsing products.
+   - Provides links to key sections of the website, such as the Projects, About, and Contact pages, for easy navigation.
 
-2. **Projects Page**
-   - Displays a list of all projects with detailed descriptions, technologies used, and links to the project live demo and GitHub.
+2. **Browse Products Page**
+   - Displays a comprehensive list of secondhand items available for purchase.
+   - Includes filtering and sorting options based on categories, price range, and condition (new or used).
+   - Shows detailed product pages with descriptions, images, pricing, and seller information.
 
-3. **About Me Page**
-   - Displays a brief biography and highlights the technical skills, work experience, and accomplishments.
+3. **About RE-LIST Page**
+   - A brief overview of **RE-LIST**, including its mission to promote sustainable shopping by connecting buyers and sellers of secondhand goods.
+   - Highlights key features and benefits of using the platform.
+   - Displays any relevant certifications, awards, or recognitions that enhance the platform's credibility.
 
 4. **Contact Page**
-   - Provides a contact form for visitors to get in touch.
+   - A contact form allowing visitors to reach out for inquiries or support.
+   - Includes additional contact information, such as email, social media links, or live chat (if available).
+   - Provides an easy way for users to ask questions, report issues, or request assistance with the platform.
 
 
 

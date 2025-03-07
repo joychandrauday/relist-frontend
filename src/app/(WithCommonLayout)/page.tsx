@@ -1,10 +1,14 @@
+import Categories from "@/components/modules/Homepage/Categories";
+import Grid from "@/components/modules/Homepage/Grid";
+import Hero from "@/components/modules/Homepage/Hero";
 
-import BannerElements from "@/components/utils/BannerElements";
 
 const HomeBannerElements = () => {
   return (
     <>
-      <BannerElements />
+      <Hero />
+      <Grid />
+      <Categories />
     </>
   );
 };

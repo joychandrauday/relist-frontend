@@ -52,7 +52,7 @@ export default function LoginForm() {
     };
 
     return (
-        <div className="border border-gray-300 rounded-xl flex-grow max-w-md w-full p-5 shadow-lg bg-white">
+        <div className="border border-gray-300 rounded-xl flex-grow max-w-md w-full p-5 shadow-lg ">
             <div className="flex items-center space-x-4 mb-4">
                 <Image
                     src={"/relisticon.png"}

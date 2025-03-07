@@ -25,7 +25,7 @@ const ReportPage = async () => {
             <div className="grid md:grid-cols-3 gap-6 mb-8">
 
                 {/* Products Metadata Section */}
-                <section className="bg-white p-6 rounded-lg shadow-md">
+                <section className=" p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl font-semibold text-gray-700 mb-4">Product Metadata</h2>
                     <div className="grid gap-4">
                         <div className="bg-blue-50 p-4 rounded-lg">
@@ -37,7 +37,7 @@ const ReportPage = async () => {
                 </section>
 
                 {/* Users Metadata Section */}
-                <section className="bg-white p-6 rounded-lg shadow-md">
+                <section className=" p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl font-semibold text-gray-700 mb-4">User Metadata</h2>
                     <div className="grid gap-4">
                         <div className="bg-green-50 p-4 rounded-lg">

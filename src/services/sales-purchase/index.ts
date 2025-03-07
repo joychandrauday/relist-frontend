@@ -80,3 +80,24 @@ export const updateTransactionStatus = async (transactionId: string, newStatus: 
         return Error(error);
     }
 };
+export const updateOrderStatus = async (transactionId: string, newStatus: { orderStatus: 'pending' | 'completed' }) => {
+
+    try {
+
+        const res = await fetch(
+            `${process.env.SERVER_API}/orders/${transactionId}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newStatus),
+            }
+        );
+        const data = await res.json();
+        return data;
+
+    } catch (error: any) {
+        return Error(error);
+    }
+};

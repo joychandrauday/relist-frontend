@@ -15,7 +15,7 @@ const ListingPage = async ({
     const { data: listings } = await getAllListings('10', pageQuery);
 
     return (
-        <div className="container sm:w-[100vw] mx-auto pt-20">
+        <div className="container   mx-auto overflow-hidden pt-20">
             <div className="flex px-3 justify-between items-center mb-4">
                 <h1 className="text-xl font-semibold">Manage Listings({listings?.listings?.length})</h1>
                 <Link href={'#addListing'}>

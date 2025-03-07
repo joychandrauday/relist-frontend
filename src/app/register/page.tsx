@@ -2,6 +2,7 @@
 "use client";
 
 import { registerUser } from "@/utils/actions/registerUser";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -32,9 +33,22 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-6 ">
+    <div className="flex  items-center justify-center p-6 min-h-screen">
       <div className="w-full max-w-md p-8 border-4  rounded-lg shadow-xl">
+        <Image
+          src={"/relisticon.png"}
+          width={80}
+          height={80}
+          alt="relist logo"
+          className="object-contain mx-auto mb-4"
+        />
         <h1 className="text-3xl font-bold text-center text-teal-600 mb-6">Register</h1>
+        {/* Back to Home Button */}
+        <div className="text-center mt-4">
+          <Link href="/" className="text-teal-500 hover:underline">
+            &larr; Back to Home
+          </Link>
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label className="block text-gray-700 font-medium">Full Name</label>

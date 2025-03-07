@@ -35,7 +35,7 @@ const MessageButton = ({ sellerId, sellerName, sellerAvatar }: { sellerId: strin
 
             {/* Message Modal */}
             <Dialog open={isOpen} onOpenChange={setIsOpen} >
-                <DialogContent className="max-w-lg p-6 bg-white z-50 rounded-xl shadow-xl">
+                <DialogContent className="max-w-lg p-6 z-50 rounded-xl shadow-xl">
                     <DialogHeader>
                         <DialogTitle className="text-center flex flex-col items-center">
                             {/* Seller Avatar (Big) */}

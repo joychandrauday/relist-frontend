@@ -79,7 +79,7 @@ const UserPayment = ({ orderId }: { orderId?: string }) => {
     if (loading) return <LoadingPage />;
     if (error) return <p className="text-red-500">{error}</p>;
     return (
-        <div className="bg-white p-6 rounded-lg shadow-lg mt-8 max-w-3xl mx-auto">
+        <div className="p-6 rounded-lg shadow-lg mt-8 max-w-3xl mx-auto">
             <h2 className="text-2xl font-semibold mb-4">Payment Details</h2>
             <div className="flex justify-between">
                 {/* Order Details */}

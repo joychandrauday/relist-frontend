@@ -3,10 +3,11 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { HiCurrencyBangladeshi } from "react-icons/hi";
 import { IProduct } from "@/types/product";
+import MessageButton from "../message/MessageButton";
+import { ShoppingCart } from "lucide-react";
 
 const ProductCard = ({ product }: { product: IProduct }) => {
     return (
@@ -39,12 +40,12 @@ const ProductCard = ({ product }: { product: IProduct }) => {
                                 : <></>
                         }
                     </div>
-                    <p className="font-semibold text-sm text-gray-700">{product.userID.name}</p>
+                    <p className="font-semibold text-sm">{product.userID.name}</p>
                 </div>
 
                 {/* Product Title */}
                 <Link href={`/products/${product._id}`}>
-                    <h3 className="text-lg font-semibold text-gray-900 truncate">{product.title}</h3>
+                    <h3 className="text-lg font-semibold  truncate">{product.title}</h3>
                 </Link>
 
                 {/* Price & Condition */}
@@ -62,12 +63,15 @@ const ProductCard = ({ product }: { product: IProduct }) => {
                 <div className="flex justify-between items-center mt-4">
                     <Link href={`/products/${product._id}`}>
                         <Button variant="outline" size="sm">
+                            <ShoppingCart className="w-4 h-4 mr-2" /> View Details
+                        </Button>
+                    </Link>
+                    <Link href={`/checkout/${product._id}`}>
+                        <Button variant="outline" size="sm">
                             <ShoppingCart className="w-4 h-4 mr-2" /> Buy Now
                         </Button>
                     </Link>
-                    <Button variant="ghost" size="icon">
-                        <MessageCircle className="w-5 h-5 text-gray-600" />
-                    </Button>
+                    <MessageButton sellerId={product.userID._id} sellerName={product.userID.name} sellerAvatar={product.userID.avatar} />
                 </div>
             </CardContent>
         </Card >

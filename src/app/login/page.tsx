@@ -42,8 +42,15 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
       <div className="w-full max-w-md mt-12 p-8 rounded-xl backdrop-blur-xl bg-white/10 dark:bg-black/30 shadow-lg border border-gray-200 dark:border-gray-700">
+        <Image
+          src={"/relisticon.png"}
+          width={80}
+          height={80}
+          alt="relist logo"
+          className="object-contain mx-auto mb-4"
+        />
         <h1 className="text-center text-3xl font-bold text-gray-900 dark:text-gray-100">Login</h1>
 
         {/* Back to Home Button */}
@@ -71,6 +78,7 @@ const LoginPage = () => {
               className="w-full mt-1 px-4 py-2 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 dark:text-gray-100"
               placeholder="Enter your password"
             />
+            <p className="text-sm opacity-30 pt-2">for google or github sign in users default password is &quot;password&quot;</p>
           </div>
           <button
             type="submit"
@@ -90,13 +98,13 @@ const LoginPage = () => {
         <p className="text-center mt-4 text-sm text-gray-500 dark:text-gray-400">Or continue with</p>
         <div className="flex justify-center gap-4 mt-4">
           <button
-            onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+            onClick={() => signIn("google", { callbackUrl: "/register" })}
             className="flex items-center justify-center w-12 h-12 bg-gray-200 dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-300 dark:hover:bg-gray-700"
           >
             <FaGoogle />
           </button>
           <button
-            onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
+            onClick={() => signIn("github", { callbackUrl: "/register" })}
             className="flex items-center justify-center w-12 h-12 bg-gray-200 dark:bg-gray-800 rounded-full shadow-md hover:bg-gray-300 dark:hover:bg-gray-700"
           >
             <FaGithub />

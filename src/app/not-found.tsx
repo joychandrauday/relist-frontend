@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const NotFoundPage = () => {
   return (
@@ -15,6 +16,10 @@ const NotFoundPage = () => {
           <h1 className="text-gray-600 font-bold">
             X Page Not found or has been deleted!
           </h1>
+          {/* add back to home link */}
+          <Link href="/" className="text-blue-600 hover:text-blue-700">
+            Back to Home
+          </Link>
         </div>
       </div>
     </div>

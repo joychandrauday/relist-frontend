@@ -173,177 +173,70 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
     };
 
     return (
-        <div className="wrap">
-            <div className="overflow-x-auto">
-                <Table className="w-full table-auto overflow-x-auto">
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Title</TableHead>
-                            <TableHead>Price</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Image</TableHead>
-                            <TableHead>Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
+        <div className="wrap overflow-x-auto">
+            <div className="overflow-x-auto table-auto w-full">
+                <table className="w-full min-w-[600px] border border-gray-300">
+                    <thead className="">
+                        <tr>
+                            <th className="p-2 text-sm md:text-base border">Title</th>
+                            <th className="p-2 text-sm md:text-base border">Price</th>
+                            <th className="p-2 text-sm md:text-base border">Status</th>
+                            <th className="p-2 text-sm md:text-base border">Image</th>
+                            <th className="p-2 text-sm md:text-base border">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {listings?.length > 0 ? (
                             listings?.map((listing) => (
-                                <TableRow key={listing._id}>
-                                    <TableCell>{listing.title.slice(0, 30)}...</TableCell>
-                                    <TableCell>৳{listing.price}</TableCell>
-                                    <TableCell>
-                                        <Select
+                                <tr key={listing._id} className="text-xs md:text-sm border">
+                                    <td className="p-2 border">{listing.title.slice(0, 30)}...</td>
+                                    <td className="p-2 border">৳{listing.price}</td>
+                                    <td className="p-2 border">
+                                        <select
                                             value={listing.status}
-                                            onValueChange={async (newStatus) => {
+                                            onChange={async (e) => {
                                                 try {
-                                                    await updateListing({ status: newStatus }, listing._id);
+                                                    await updateListing({ status: e.target.value }, listing._id);
                                                     toast.success("Status updated successfully!");
-
                                                 } catch (error) {
                                                     toast.error("Failed to update status.");
                                                 }
                                             }}
+                                            className="w-[80px] text-xs md:text-sm border rounded p-1"
                                         >
-                                            <SelectTrigger className="w-[80px]">
-                                                <SelectValue placeholder="Select Status" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="sold">Sold</SelectItem>
-                                                <SelectItem value="available">Available</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </TableCell>
-                                    <TableCell>
+                                            <option value="sold">Sold</option>
+                                            <option value="available">Available</option>
+                                        </select>
+                                    </td>
+                                    <td className="p-2 border">
                                         <Image
                                             src={listing.images[0]}
                                             alt={listing.title}
-                                            width={50}
-                                            height={500}
-                                            className="rounded-full"
+                                            className="rounded-full w-10 h-10 md:w-12 md:h-12"
+                                            width={120}
+                                            height={120}
                                         />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button variant="outline" className="mr-2" onClick={() => openEditModal(listing)}>Edit</Button>
-                                        <Button variant="destructive" onClick={() => handleDelete(listing._id)}>Delete</Button>
-                                    </TableCell>
-                                </TableRow>
+                                    </td>
+                                    <td className="p-2 border">
+                                        <div className="flex flex-col md:flex-row gap-2">
+                                            <button className="border px-2 py-1 rounded text-xs md:text-sm" onClick={() => openEditModal(listing)}>Edit</button>
+                                            <button className="border px-2 py-1 rounded text-xs md:text-sm bg-red-500 text-white" onClick={() => handleDelete(listing._id)}>Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
                             ))
                         ) : (
-                            <TableRow>
-                                <TableCell colSpan={5} className="text-center py-4">
+                            <tr>
+                                <td colSpan={5} className="text-center py-4 text-xs md:text-sm border">
                                     No listings found.
-                                </TableCell>
-                            </TableRow>
+                                </td>
+                            </tr>
                         )}
-                    </TableBody>
-                </Table>
-
+                    </tbody>
+                </table>
             </div>
             {/* Edit Modal */}
             {isModalOpen && selectedListing && (
-                // <Dialog open={isModalOpen} onOpenChange={closeModal}>
-                //     <DialogContent>
-                //         <DialogHeader>
-                //             <DialogTitle>Edit Listing</DialogTitle>
-                //         </DialogHeader>
-                //         <div className="grid grid-cols-2 gap-1 py-4">
-                //             <div>
-                //                 <Label htmlFor="title">Title</Label>
-                //                 <Input name="title" value={selectedListing.title || ""} onChange={handleChange} />
-                //             </div>
-                //             <div>
-                //                 <Label htmlFor="description">Description</Label>
-                //                 <Input name="description" value={selectedListing.description || ""} onChange={handleChange} />
-                //             </div>
-                //             <div>
-                //                 <Label htmlFor="price">Price</Label>
-                //                 <Input name="price" type="number" value={selectedListing.price || ""} onChange={handleChange} />
-                //             </div>
-                //             <div className="flex gap-2">
-
-                //                 {/* category dropdown */}
-                //                 <div>
-                //                     <Label htmlFor="category">Category</Label>
-                //                     <select
-                //                         name="category"
-                //                         value={selectedListing?.category || ""}
-                //                         onChange={(e) => setSelectedListing({ ...selectedListing, category: e.target.value })}
-                //                         className="input"
-                //                     >
-                //                         <option value="">Select Category</option>
-                //                         {categories.map((category) => (
-                //                             <option key={category._id} value={category.name}>
-                //                                 {category.name}
-                //                             </option>
-                //                         ))}
-                //                     </select>
-                //                 </div>
-
-                //                 <div>
-                //                     <Label htmlFor="condition">Condition</Label>
-                //                     <select
-                //                         name="condition"
-                //                         value={selectedListing?.condition || ""}
-                //                         onChange={(e) => setSelectedListing({ ...selectedListing, condition: e.target.value })}
-                //                         className="input"
-                //                     >
-                //                         <option value="">Select Condition</option>
-                //                         {conditionOptions.map((condition) => (
-                //                             <option key={condition} value={condition}>{condition}</option>
-                //                         ))}
-                //                     </select>
-                //                 </div>
-                //                 <div>
-                //                     <Label htmlFor="location-city">City</Label>
-                //                     <select
-                //                         name="city"
-                //                         value={selectedListing?.location?.city || ""}
-                //                         onChange={(e) => handleLocationChange(e, 'city')}
-                //                         className="input"
-                //                     >
-                //                         <option value="">Select City</option>
-                //                         {districtsOfBangladesh.map((district) => (
-                //                             <option key={district} value={district}>{district}</option>
-                //                         ))}
-                //                     </select>
-                //                 </div>
-                //             </div>
-                //             <div>
-                //                 <Label htmlFor="location-state">State</Label>
-                //                 <Input name="state" value={selectedListing.location?.state || ""} onChange={(e) => handleLocationChange(e, 'state')} />
-                //             </div>
-                //             <div>
-                //                 <Label htmlFor="location-country">Country</Label>
-                //                 <Input name="country" value={selectedListing.location?.country || ""} onChange={(e) => handleLocationChange(e, 'country')} />
-                //             </div>
-                //             <div>
-                //                 <Label htmlFor="status">Status</Label>
-                //                 <Select
-                //                     value={selectedListing?.status || ""}
-                //                     onValueChange={(value) =>
-                //                         setSelectedListing((prev) => ({
-                //                             ...prev!,
-                //                             status: value,
-                //                         }))
-                //                     }
-                //                 >
-                //                     <SelectTrigger className="w-[180px]">
-                //                         <SelectValue placeholder="Select Status" />
-                //                     </SelectTrigger>
-                //                     <SelectContent>
-                //                         <SelectItem value="sold">Sold</SelectItem>
-                //                         <SelectItem value="available">Available</SelectItem>
-                //                     </SelectContent>
-                //                 </Select>
-                //             </div>
-
-                //         </div>
-                //         <div className="flex justify-end gap-2">
-                //             <Button variant="outline" onClick={closeModal}>Cancel</Button>
-                //             <Button onClick={handleSave}>Save</Button>
-                //         </div>
-                //     </DialogContent>
-                // </Dialog>
                 <div className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 ${isModalOpen ? '' : 'hidden'}`}>
                     <div className="backdrop-blur-lg border-2 border-gray-400  rounded-lg shadow-lg p-6 w-[500px]">
                         <h2 className="text-lg font-semibold mb-4">Edit Listing</h2>

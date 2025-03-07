@@ -5,8 +5,8 @@ import { Toaster } from "react-hot-toast";
 import SessionProviders from "@/lib/sessionProviders";
 
 export const metadata: Metadata = {
-  title: "Joy Chandra Uday | Full Stack Developer",
-  description: "I am a passionate MERN Stack Developer specializing in building dynamic and responsive web applications",
+  title: "RE-LIST | Relist, Reuse, Recycle",
+  description: "Our mission is to create a sustainable marketplace by offering an easy way for people to sell and buy secondhand goods, reduce waste, and promote recycling.",
 };
 
 export default async function RootLayout({

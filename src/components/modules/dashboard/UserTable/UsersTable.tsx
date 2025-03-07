@@ -172,7 +172,7 @@ const Userble = ({ users, totalPages }: { users: IUser[], totalPages: number }) 
             {/* Edit User Modal */}
             {isModalOpen && selectedUser && (
                 <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-md w-full sm:max-w-md max-w-xs">
+                    <div className=" p-6 rounded-md w-full sm:max-w-md max-w-xs">
                         <h2 className="text-2xl font-semibold mb-4">Edit User</h2>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>

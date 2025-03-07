@@ -116,31 +116,51 @@ const AddProduct = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 bg-white shadow-md rounded-md sm:min-w-[100vw] space-y-4">
-            <h2 className="text-xl font-semibold">Add Product</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 max-w-5xl mx-auto shadow-md rounded-md space-y-4  dark:bg-gray-900">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 text-center">Add Product</h2>
 
+            {/* Title */}
             <div>
                 <Label>Title</Label>
-                <Input type="text" {...register("title", { required: "Title is required" })} />
+                <Input
+                    type="text"
+                    {...register("title", { required: "Title is required" })}
+                    className="w-full mt-1 p-2 border rounded-md"
+                />
                 {errors.title && <span className="text-red-500">{errors.title.message}</span>}
             </div>
 
+            {/* Description */}
             <div>
                 <Label>Description</Label>
-                <Textarea {...register("description", { required: "Description is required" })} />
+                <Textarea
+                    {...register("description", { required: "Description is required" })}
+                    className="w-full mt-1 p-2 border rounded-md"
+                />
                 {errors.description && <span className="text-red-500">{errors.description.message}</span>}
             </div>
 
-            <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+            {/* Grid Layout for Inputs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+                {/* Price */}
                 <div>
                     <Label>Price (BDT)</Label>
-                    <Input type="number" {...register("price", { required: "Price is required" })} />
+                    <Input
+                        type="number"
+                        {...register("price", { required: "Price is required" })}
+                        className="w-full mt-1 p-2 border rounded-md"
+                    />
                     {errors.price && <span className="text-red-500">{errors.price.message}</span>}
                 </div>
 
+                {/* Condition */}
                 <div>
                     <Label>Condition</Label>
-                    <select {...register("condition", { required: "Condition is required" })} className="w-full p-2 border rounded-md">
+                    <select
+                        {...register("condition", { required: "Condition is required" })}
+                        className="w-full mt-1 p-2 border rounded-md"
+                    >
                         {conditionOptions.map((option, idx) => (
                             <option key={idx} value={option}>{option}</option>
                         ))}
@@ -148,9 +168,13 @@ const AddProduct = () => {
                     {errors.condition && <span className="text-red-500">{errors.condition.message}</span>}
                 </div>
 
+                {/* Category */}
                 <div>
                     <Label>Category</Label>
-                    <select {...register("category", { required: "Category is required" })} className="w-full p-2 border rounded-md">
+                    <select
+                        {...register("category", { required: "Category is required" })}
+                        className="w-full mt-1 p-2 border rounded-md"
+                    >
                         {categories.map(cat => (
                             <option key={cat._id} value={cat.name}>{cat.name}</option>
                         ))}
@@ -158,9 +182,13 @@ const AddProduct = () => {
                     {errors.category && <span className="text-red-500">{errors.category.message}</span>}
                 </div>
 
+                {/* Status */}
                 <div>
                     <Label>Status</Label>
-                    <select {...register("status", { required: "Status is required" })} className="w-full p-2 border rounded-md">
+                    <select
+                        {...register("status", { required: "Status is required" })}
+                        className="w-full mt-1 p-2 border rounded-md"
+                    >
                         {statusOptions.map((option, idx) => (
                             <option key={idx} value={option}>{option}</option>
                         ))}
@@ -168,9 +196,13 @@ const AddProduct = () => {
                     {errors.status && <span className="text-red-500">{errors.status.message}</span>}
                 </div>
 
+                {/* City */}
                 <div>
                     <Label>City</Label>
-                    <select {...register("city", { required: "City is required" })} className="w-full p-2 border rounded-md">
+                    <select
+                        {...register("city", { required: "City is required" })}
+                        className="w-full mt-1 p-2 border rounded-md"
+                    >
                         {districtsOfBangladesh.map((city, idx) => (
                             <option key={idx} value={city}>{city}</option>
                         ))}
@@ -178,27 +210,53 @@ const AddProduct = () => {
                     {errors.city && <span className="text-red-500">{errors.city.message}</span>}
                 </div>
 
+                {/* Country */}
                 <div>
                     <Label>Country</Label>
-                    <Input type="text" defaultValue="Bangladesh" {...register("country", { required: "Country is required" })} readOnly />
+                    <Input
+                        type="text"
+                        defaultValue="Bangladesh"
+                        {...register("country", { required: "Country is required" })}
+                        readOnly
+                        className="w-full mt-1 p-2 border rounded-md"
+                    />
                 </div>
             </div>
 
+            {/* Image Upload */}
             <div>
                 <Label>Upload Images</Label>
-                <Input type="file" multiple accept="image/*" {...register("images", { required: "At least one image is required" })} />
+                <Input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    {...register("images", { required: "At least one image is required" })}
+                    className="w-full mt-1 p-2 border rounded-md"
+                />
                 {errors.images && <span className="text-red-500">{errors.images.message}</span>}
             </div>
 
-            <div className="flex justify-between">
-                <Button type="button" variant="outline" onClick={() => reset()} disabled={loading}>
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => reset()}
+                    disabled={loading}
+                    className="w-full sm:w-auto"
+                >
                     Cancel
                 </Button>
-                <Button type="submit" disabled={loading}>
+                <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full sm:w-auto"
+                >
                     {loading ? "Submitting..." : "Submit"}
                 </Button>
             </div>
         </form>
+
     );
 };
 

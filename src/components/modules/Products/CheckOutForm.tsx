@@ -83,7 +83,7 @@ const CheckoutForm = ({ product }: { product: Product }) => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-lg mt-8">
+        <div className="p-6 rounded-lg shadow-lg mt-8">
             <h2 className="text-2xl font-semibold mb-4">Shipping Information</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>

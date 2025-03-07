@@ -61,7 +61,7 @@ export const AnimatedTestimonials = ({
 
     return (
         <div
-            className="max-w-sm md:max-w-7xl mx-auto antialiased font-sans px-4 md:px-8 bg-transparent py-32"
+            className="max-w-sm md:max-w-5xl mx-auto antialiased font-sans px-4 md:px-8 bg-transparent py-32"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
         >

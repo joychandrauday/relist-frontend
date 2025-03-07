@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { HiCurrencyBangladeshi } from 'react-icons/hi';
+import { toast } from 'sonner';
 
 
 const WishListContainer = () => {
@@ -40,6 +41,7 @@ const WishListContainer = () => {
             const updatedUser = await removeFromWishlist(itemId);
             if (updatedUser?.data?.wishlist) {
                 setWishlist(updatedUser.data.wishlist);
+                toast.success('Item removed from wishlist!!')
             }
         } catch (error) {
             console.error("Error removing item:", error);
@@ -53,7 +55,7 @@ const WishListContainer = () => {
                 {wishlist.length > 0 ? (
                     <ul className="grid grid-cols-3 gap-4 items-center">
                         {wishlist.map((item) => (
-                            <li key={item._id} className="p-4 bg-white shadow rounded flex items-center space-x-4 relative">
+                            <li key={item._id} className="p-4 border shadow rounded flex items-center space-x-4 relative">
                                 <Image
                                     src={item.images?.[0] || '/default-image.jpg'}
                                     alt={item.title}

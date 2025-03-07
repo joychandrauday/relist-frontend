@@ -6,14 +6,9 @@ import { getServerSession } from "next-auth";
 
 const CommonLayout = async ({ children }: { children: React.ReactNode }) => {
   const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    return null;
-  }
-
   return (
     <>
-      <Navbar user={session.user} /> {/* Pass user directly */}
+      <Navbar user={session?.user} />
       <main className="min-h-screen pt-12">{children}</main>
       <Footer />
     </>

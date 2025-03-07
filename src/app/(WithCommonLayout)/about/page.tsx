@@ -24,7 +24,7 @@ const About = () => {
             </div>
 
             {/* Our Mission Section */}
-            <div className="max-w-6xl mx-auto p-6 md:p-12 text-center bg-white dark:bg-gray-800">
+            <div className="max-w-6xl mx-auto p-6 md:p-12 text-center  dark:bg-gray-800">
                 <h3 className="text-2xl font-semibold mb-4">Our Mission</h3>
                 <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
                     Our mission is to create a sustainable marketplace by offering an easy way for people to sell
@@ -60,15 +60,15 @@ const About = () => {
                 <div className="max-w-6xl mx-auto text-center">
                     <h3 className="text-2xl font-semibold mb-6">Why Choose Us</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                        <div className="p-4  dark:bg-gray-800 rounded-lg shadow-lg">
                             <h4 className="font-semibold text-lg text-gray-800 dark:text-white">Eco-Friendly</h4>
                             <p className="text-gray-600 dark:text-gray-300">Reduce waste by reusing quality products.</p>
                         </div>
-                        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                        <div className="p-4  dark:bg-gray-800 rounded-lg shadow-lg">
                             <h4 className="font-semibold text-lg text-gray-800 dark:text-white">Secure Transactions</h4>
                             <p className="text-gray-600 dark:text-gray-300">We ensure your buying and selling experience is safe and secure.</p>
                         </div>
-                        <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+                        <div className="p-4  dark:bg-gray-800 rounded-lg shadow-lg">
                             <h4 className="font-semibold text-lg text-gray-800 dark:text-white">Affordable Prices</h4>
                             <p className="text-gray-600 dark:text-gray-300">Buy and sell at affordable prices with no hidden fees.</p>
                         </div>

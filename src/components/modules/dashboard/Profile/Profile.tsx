@@ -158,7 +158,7 @@ export default function Profile() {
             {/* Image Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-4 rounded-lg">
+                    <div className=" p-4 rounded-lg">
                         <Image
                             src={userdb?.avatar || "/relisticon.png"}
                             alt="Profile Image"

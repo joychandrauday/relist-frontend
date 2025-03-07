@@ -6,7 +6,7 @@ const Hero = async () => {
     const { data: listings } = await getAllListings('5', '');
     return (
         <div>
-            <AnimatedTestimonials testimonials={listings.listings} autoplay={true} />
+            <AnimatedTestimonials testimonials={listings?.listings} autoplay={true} />
         </div>
     );
 }

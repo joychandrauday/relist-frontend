@@ -1,18 +1,19 @@
 'use client'
 import { updateListing } from '@/services/listings';
-import { updateTransactionStatus } from '@/services/sales-purchase';
+import { updateOrderStatus, updateTransactionStatus } from '@/services/sales-purchase';
 import { ITransaction } from '@/types/orders';
 import React from 'react';
 import { toast } from 'sonner';
 
 const TransactionTable = ({ orders }: { orders: ITransaction[] }) => {
-    const handleStatusChange = async (orderId: string, newStatus: 'pending' | 'completed', productID: string) => {
+    const handleStatusChange = async (order: ITransaction, newStatus: 'pending' | 'completed', productID: string) => {
         const updateData = {
             status: newStatus
         }
-        const res = await updateTransactionStatus(orderId, updateData);
+        const res = await updateTransactionStatus(order._id, updateData);
         if (res.data.status === 'completed') {
             await updateListing({ status: 'sold' }, productID)
+            await updateOrderStatus(order.orderID._id, { orderStatus: 'completed' })
             toast.success('Order updated successfully!!')
             window.location.reload()
             return;
@@ -38,7 +39,7 @@ const TransactionTable = ({ orders }: { orders: ITransaction[] }) => {
                     {orders?.length > 0 ? (
                         orders?.map((order) => (
                             <tr key={order._id} className="border-b">
-                                <td className="border px-4 py-2">{order.orderID.transaction.id}</td>
+                                <td className="border px-4 py-2">{order.orderID?.transaction?.id}</td>
                                 <td className="border px-4 py-2">
                                     {order.buyerID?.name || 'N/A'}
                                 </td>
@@ -49,12 +50,12 @@ const TransactionTable = ({ orders }: { orders: ITransaction[] }) => {
                                     {order.itemID?.price ? `${order.itemID.price} BDT` : 'N/A'}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {order.orderID.transaction.bank_status || 'N/A'}
+                                    {order.orderID?.transaction?.bank_status || 'N/A'}
                                 </td>
                                 <td className="border px-4 py-2">
                                     <select
                                         value={order.status || 'N/A'}
-                                        onChange={(e) => handleStatusChange(order._id, e.target.value as 'pending' | 'completed', order.itemID._id)}
+                                        onChange={(e) => handleStatusChange(order, e.target.value as 'pending' | 'completed', order.itemID._id)}
                                         className="border px-2 py-1 rounded-md"
                                     >
                                         <option value="N/A">Select Status</option>

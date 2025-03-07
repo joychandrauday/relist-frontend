@@ -23,7 +23,7 @@ const ProductPage = async ({
 
     const { data } = await getAllListings('6', queryString);
     return (
-        <div className='pt-20'>
+        <div className=''>
             <ProductContainer data={data} />
         </div>
     );

@@ -52,6 +52,7 @@ export interface ITransaction {
         images: string[];
     };
     orderID: {
+        _id: string;
         transaction: {
             id: string;
             bank_status: string;

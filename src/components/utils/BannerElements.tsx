@@ -8,6 +8,7 @@ const BannerElements = () => {
             <Hero />
             <Categories />
             <Grid />
+
         </>
     );
 }

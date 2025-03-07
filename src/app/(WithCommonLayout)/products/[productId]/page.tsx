@@ -19,7 +19,7 @@ const SingleProductPage = async ({ params,
     }
 
     return (
-        <div className="container mx-auto p-6 pt-24">
+        <div className="container mx-auto p-6 pt-32">
             <SIngleProductContainer product={product} />
         </div >
     );

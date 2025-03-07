@@ -33,10 +33,10 @@ const Grid = () => {
 
                 {/* 🔹 Product Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {products.map((product) => (
+                    {products?.map((product) => (
                         <div
                             key={product._id}
-                            className="bg-white shadow-lg rounded-xl overflow-hidden transform hover:-translate-y-2 transition duration-300"
+                            className="shadow-lg bg-current rounded-xl overflow-hidden transform hover:-translate-y-2 transition duration-300"
                         >
                             <Link href={`/products/${product._id}`}>
                                 <div className="cursor-pointer">

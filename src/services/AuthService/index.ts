@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
+import { authOptions } from "@/utils/authOptions";
 import { jwtDecode } from "jwt-decode";
+import { getServerSession } from "next-auth";
 import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 
@@ -61,36 +63,29 @@ export const logout = async () => {
 
 export const addToWishlist = async (productId: any) => {
   try {
-    const accessToken = (await cookies()).get("accessToken")?.value;
-    let decodedData = null;
+    const session = await getServerSession(authOptions)
+    console.log(session);
+    const res = await fetch(`${process.env.SERVER_API}/users/${session?.user?.id}/wishlist`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ listingId: productId }),
+    });
+    const result = await res.json();
 
-    if (accessToken) {
-      decodedData = await jwtDecode(accessToken);
-      const res = await fetch(`${process.env.SERVER_API}/users/${decodedData.id}/wishlist`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ listingId: productId }),
-      });
-      const result = await res.json();
-
-      return result;
-    } else {
-      return null;
-    }
+    return result;
   } catch (error: any) {
     return Error(error);
   }
 };
 export const removeFromWishlist = async (productId: any) => {
   try {
-    const accessToken = (await cookies()).get("accessToken")?.value;
-    let decodedData = null;
+    const session = await getServerSession(authOptions)
 
-    if (accessToken) {
-      decodedData = await jwtDecode(accessToken);
-      const res = await fetch(`${process.env.SERVER_API}/users/${decodedData.id}/wishlist`, {
+    if (session) {
+
+      const res = await fetch(`${process.env.SERVER_API}/users/${session.user?.id}/wishlist`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

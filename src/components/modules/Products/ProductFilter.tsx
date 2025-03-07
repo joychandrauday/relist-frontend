@@ -191,14 +191,14 @@ const ProductFilter = () => {
                         ))}
                     </select>
                 </div>
+                <div className="flex mt-6">
+                    <Button onClick={handleResetFilters} className="bg-gray-500 text-white w-full md:w-auto">
+                        Reset Filters
+                    </Button>
+                </div>
             </div>
 
             {/* Reset Button */}
-            <div className="flex mt-6">
-                <Button onClick={handleResetFilters} className="bg-gray-500 text-white w-full md:w-auto">
-                    Reset Filters
-                </Button>
-            </div>
         </div>
     );
 };
