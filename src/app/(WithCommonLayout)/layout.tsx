@@ -9,7 +9,7 @@ const CommonLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Navbar user={session?.user} />
-      <main className="min-h-screen pt-12">{children}</main>
+      <main className="min-h-screen">{children}</main>
       <Footer />
     </>
   );

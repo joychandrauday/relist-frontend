@@ -15,3 +15,9 @@ export interface IWishlist {
   title: string;
   price: number;
 }
+
+export interface IMessage {
+  senderID: string | undefined;
+  receiverID: string;
+  message: string;
+}

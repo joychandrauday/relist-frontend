@@ -38,10 +38,10 @@ const Categories = () => {
 
                 {/* 🔹 Category Marquee */}
                 <Marquee gradient={false} speed={50} pauseOnHover={true}>
-                    <div className="flex  space-x-6">
+                    <div className="flex py-6 space-x-6">
                         {categories?.map((category) => (
                             <Link href={`/products?category=${category.name}`} key={category._id}>
-                                <div className="bg-current shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-1 transition duration-300 cursor-pointer p-4 flex flex-col items-center w-60">
+                                <div className="dark:shadow-white shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-1 transition duration-300 cursor-pointer p-4 flex flex-col items-center w-60">
                                     {/* 📌 Category Info */}
                                     <div className="w-24 h-24 rounded-full overflow-hidden">
                                         <Image

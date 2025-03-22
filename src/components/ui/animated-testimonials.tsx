@@ -134,12 +134,12 @@ export const AnimatedTestimonials = ({
                         }}
                     >
                         <h3 className="text-2xl font-bold dark:text-white text-black">
-                            {testimonials[active].title.slice(0, 20)}...
+                            {testimonials[active]?.title.slice(0, 20)}...
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-neutral-500">
-                            {testimonials[active].description.slice(0, 200)}
+                            {testimonials[active]?.description.slice(0, 200)}
                         </p>
-
+e
                         <motion.p className="text-lg text-gray-500 mt-5 dark:text-neutral-300 flex items-center gap-2">
                             <HiCurrencyBangladeshi /> {testimonials[active].price}
                         </motion.p>

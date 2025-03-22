@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export type UserData = {
-  username: string;
+  name: string;
   email: string;
   password: string;
 };
@@ -54,7 +54,7 @@ const RegisterPage = () => {
             <label className="block text-gray-700 font-medium">Full Name</label>
             <input
               type="text"
-              {...register("username")}
+              {...register("name")}
               placeholder="User Name"
               className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
               required

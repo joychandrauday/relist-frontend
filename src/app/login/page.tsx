@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,10 @@ import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import toast from "react-hot-toast";
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
+const socket = io("http://localhost:3001"); // Socket.IO server URL
 export type FormValues = {
   email: string;
   password: string;
@@ -22,6 +25,25 @@ const LoginPage = () => {
   } = useForm<FormValues>();
   const router = useRouter();
   const { theme } = useTheme();
+  const { data: session } = useSession(); // Get the current session data
+  const [userEmail, setUserEmail] = useState<string | null>(null); // Store the user email for socket operations
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      // Emit userLoggedIn event once the user is logged in
+      socket.emit("userLoggedIn", session?.user?.id);
+      setUserEmail(session.user.id);
+      console.log('yess');
+    }
+
+    // Cleanup: Emit logout event when the user disconnects or logs out
+    return () => {
+      if (userEmail) {
+        socket.emit("logout", userEmail);
+      }
+    };
+  }, [session?.user?.email, session?.user?.id, userEmail]); // Listen for session updates
+
   const onSubmit = async (data: FormValues) => {
     try {
       const res = await signIn("credentials", {
@@ -29,11 +51,12 @@ const LoginPage = () => {
         ...data, // Pass the credentials (email, password)
       });
 
+      console.log(res);
       if (res?.error) {
-        toast.error('Something went wrong!');
+        toast.error("Login failed. Please check your credentials.");
       } else {
-        toast.success('Logged in successfully');
-        router.push("/"); // Redirect manually
+        toast.success("User login successful!");
+        // Now the socket will be notified via the useEffect hook when the session is available
       }
     } catch (error) {
       toast.error('Something went wrong!');
@@ -78,7 +101,7 @@ const LoginPage = () => {
               className="w-full mt-1 px-4 py-2 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 dark:text-gray-100"
               placeholder="Enter your password"
             />
-            <p className="text-sm opacity-30 pt-2">for google or github sign in users default password is &quot;password&quot;</p>
+            <p className="text-sm opacity-30 pt-2">for google or github sign-in users default password is &quot;password&quot;</p>
           </div>
           <button
             type="submit"

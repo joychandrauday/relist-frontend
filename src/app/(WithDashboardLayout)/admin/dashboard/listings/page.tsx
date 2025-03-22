@@ -1,5 +1,6 @@
 import AddProduct from "@/components/modules/dashboard/Forms/AddProductForm";
 import ManageListing from "@/components/modules/dashboard/ListingTable";
+import CategoryManagement from "@/components/modules/dashboard/ListingTable/CategoryManagement";
 
 import { Button } from "@/components/ui/button";
 import { getAllListings } from "@/services/listings";
@@ -25,6 +26,7 @@ const ListingPage = async ({
             <ManageListing listings={listings} />
 
             <AddProduct />
+            <CategoryManagement />
         </div>
     );
 };

@@ -8,7 +8,7 @@ const ReportPage = async () => {
     const { data: listings } = await getAllListings();
 
 
-    const totalUsers = users.meta.total;
+    const totalUsers = users?.meta?.total;
     const activeUsers: number = users.users.filter((user: IUser) => user.status === 'active').length;
     const inactiveUsers: number = users.users.filter((user: IUser) => user.status === 'ban').length;
 
