@@ -4,7 +4,7 @@ import React from 'react';
 
 const PurchaseHistory = async () => {
     const { data: orders } = await getOrdersByUserId();
-    console.log(orders);
+
     return (
         <div className="p-6">
             <h1 className="text-2xl font-semibold mb-4">Purchase History</h1>

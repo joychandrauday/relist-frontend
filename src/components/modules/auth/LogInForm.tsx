@@ -13,13 +13,11 @@ import { Input } from "@/components/ui/input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
-import io from "socket.io-client";
 
-const socket = io("http://localhost:3001"); // 🔹 সার্ভারের WebSocket URL
 
 export default function LoginForm() {
     const form = useForm();
@@ -27,19 +25,8 @@ export default function LoginForm() {
     const redirect = searchParams.get("redirectPath");
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [userEmail, setUserEmail] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (userEmail) {
-            socket.emit("login", userEmail);
-        }
 
-        return () => {
-            if (userEmail) {
-                socket.emit("logout", userEmail);
-            }
-        };
-    }, [userEmail]);
 
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         setIsSubmitting(true);
@@ -48,18 +35,16 @@ export default function LoginForm() {
                 ...data,
                 redirect: false,
             });
-            console.log(data);
             if (result?.error) {
                 toast.error("Login failed. Please check your credentials.");
             } else {
                 toast.success("User login successful!");
-                setUserEmail(data.user._id);
 
-                // if (redirect) {
-                //     router.push(redirect);
-                // } else {
-                //     router.push("/");
-                // }
+                if (redirect) {
+                    router.push(redirect);
+                } else {
+                    router.push("/");
+                }
             }
         } catch (err) {
             console.error(err);

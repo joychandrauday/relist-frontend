@@ -3,10 +3,10 @@ import React from 'react';
 
 const Footer = () => {
     return (
-        <div className="bg-gray-800 text-white py-8 mt-12">
-            <div className="container mx-auto pt-12">
+        <div className="bg-gray-800 text-white py-8">
+            <div className="container mx-auto px-4">
                 {/* Grid layout: 1 column on small screens, 2 columns on medium, 4 columns on large */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                     {/* First Row */}
                     <div className="flex flex-col gap-3">
                         <Image
@@ -15,7 +15,7 @@ const Footer = () => {
                             width={260}
                             height={100}
                         />
-                        <p className="text-sm">We are a company focused on delivering high-quality products to our customers. Our mission is to provide the best services.</p>
+                        <p className="text-sm mt-2">We are a company focused on delivering high-quality products to our customers. Our mission is to provide the best services.</p>
                     </div>
                     <div className="flex flex-col">
                         <h3 className="font-semibold text-lg mb-4">Quick Links</h3>

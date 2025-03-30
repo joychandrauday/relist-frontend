@@ -1,11 +1,12 @@
+import CartPageDesign from '@/components/modules/cart';
 import React from 'react';
 
-const Page = () => {
+const CartPage = () => {
     return (
         <div>
-
+            <CartPageDesign />
         </div>
     );
 }
 
-export default Page;
+export default CartPage;

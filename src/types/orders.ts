@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { JSX } from "react";
 
 
 export type IOrder = {
     _id: string;
     user: string; // reference to the user who placed the order
-    product: {
+    products: {
+        map(arg0: (product: any, index: any) => JSX.Element): import("react").ReactNode;
         productId: {
             _id: string;
             title: string;

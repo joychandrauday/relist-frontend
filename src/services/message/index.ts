@@ -7,8 +7,6 @@ import { revalidatePath } from "next/cache";
 
 export const sendMessage = async (message: IMessage) => {
     try {
-        console.log(message);
-        console.log(`${process.env.SERVER_API}/messages`);
         const res = await fetch(`${process.env.SERVER_API}/messages`, {
             method: "POST",
             headers: {

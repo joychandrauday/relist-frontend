@@ -61,11 +61,11 @@ export const AnimatedTestimonials = ({
 
     return (
         <div
-            className="max-w-sm md:max-w-5xl mx-auto antialiased font-sans px-4 md:px-8 bg-transparent py-32"
+            className="max-w-sm md:max-w-5xl mx-auto antialiased font-sans px-4 md:px-8 bg-transparent z-40"
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
         >
-            <div className="relative grid grid-cols-1 md:grid-cols-2 md:gap-20">
+            <div className="relative grid grid-cols-1 md:grid-cols-2 md:gap-20 z-40">
                 <div>
                     <div className="relative h-80 w-full z-40">
                         <AnimatePresence>
@@ -104,7 +104,7 @@ export const AnimatedTestimonials = ({
                                         width={500}
                                         height={500}
                                         draggable={false}
-                                        className="h-full w-full rounded-3xl object-cover object-center z-50"
+                                        className="h-full w-full rounded-3xl object-cover object-center z-40"
                                     />
 
                                 </motion.div>
@@ -133,13 +133,12 @@ export const AnimatedTestimonials = ({
                             ease: "easeInOut",
                         }}
                     >
-                        <h3 className="text-2xl font-bold dark:text-white text-black">
+                        <h3 className="text-2xl font-bold  text-white">
                             {testimonials[active]?.title.slice(0, 20)}...
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-neutral-500">
                             {testimonials[active]?.description.slice(0, 200)}
                         </p>
-e
                         <motion.p className="text-lg text-gray-500 mt-5 dark:text-neutral-300 flex items-center gap-2">
                             <HiCurrencyBangladeshi /> {testimonials[active].price}
                         </motion.p>
@@ -174,22 +173,22 @@ e
                         </div>
                     </motion.div>
 
-                    <div className="flex gap-4 pt-12 md:pt-10">
+                    <div className="flex gap-4 ">
                         <button
                             onClick={handlePrev}
-                            className="h-7 w-7 rounded-full bg-[#FB8500] dark:bg-neutral-800 flex items-center justify-center group/button"
+                            className="h-7 w-7 rounded-full bg-[#FB8500]  flex items-center justify-center group/button"
                         >
-                            <IconArrowLeft className="h-5 w-5 text-black dark:text-neutral-400 group-hover/button:rotate-12 transition-transform duration-300" />
+                            <IconArrowLeft className="h-5 w-5 text-black  group-hover/button:rotate-12 transition-transform duration-300" />
                         </button>
                         <button
                             onClick={handleNext}
-                            className="h-7 w-7 rounded-full bg-[#FB8500] dark:bg-neutral-800 flex items-center justify-center group/button"
+                            className="h-7 w-7 rounded-full bg-[#FB8500] flex items-center justify-center group/button"
                         >
-                            <IconArrowRight className="h-5 w-5 text-black dark:text-neutral-400 group-hover/button:-rotate-12 transition-transform duration-300" />
+                            <IconArrowRight className="h-5 w-5 text-black group-hover/button:-rotate-12 transition-transform duration-300" />
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };

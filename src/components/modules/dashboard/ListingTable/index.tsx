@@ -1,8 +1,8 @@
 'use client'
 import React from 'react';
-import ListingTable from './ListingTable';
 import TablePagination from './TablePagination';
 import { IProduct } from '@/types/product';
+import ListingTable from './ListingTable';
 
 const ManageListing = ({ listings }: {
     listings: {

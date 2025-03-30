@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import {  useSearchParams } from "next/navigation";
+import { Search, X, Loader } from "lucide-react";
 
 const placeholders = [
     "Search products...",
@@ -11,13 +11,14 @@ const placeholders = [
 ];
 
 const NavSearch = () => {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const [search, setSearch] = useState(searchParams.get("search") || "");
     const [placeholder, setPlaceholder] = useState("");
     const [currentIndex, setCurrentIndex] = useState(0);
     const [charIndex, setCharIndex] = useState(0);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); // Loading state added
 
     useEffect(() => {
         const typeWriter = setTimeout(() => {
@@ -41,31 +42,64 @@ const NavSearch = () => {
         return () => clearTimeout(typeWriter);
     }, [charIndex, isDeleting, currentIndex]);
 
-    const handleSearch = (e: { preventDefault: () => void; }) => {
+    const handleSearch = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+        setIsLoading(true); // Start loading
+
         const queryParams = new URLSearchParams(window.location.search);
         if (search) {
             queryParams.set("search", search);
         } else {
             queryParams.delete("search");
         }
-        router.push(`/products?${queryParams.toString()}`);
+        window.location.href = `/products?${queryParams.toString()}`;
     };
 
     return (
-        <form onSubmit={handleSearch} className="relative w-full max-w-[320px] flex">
-            <input
-                type="text"
-                placeholder={placeholder}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full h-[40px] px-4 pl-5 text-lg font-mono text-black bg-white border-2 border-black rounded-none outline-none transition-all duration-300 shadow-[8px_8px_0px_#000] placeholder:text-gray-500 focus:bg-black focus:text-white focus:border-white focus:placeholder:text-white focus:ring-0 focus:animate-shake hover:-translate-x-[4px] hover:-translate-y-[4px] hover:shadow-[12px_12px_0px_#000]"
-            />
-            <button>
-                <Search type="submit" className="btn absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-800 hover:text-[#FB8600]" size={22} />
+        <>
+            {/* Search Button to Open Modal */}
+            <button
+                onClick={() => setIsModalOpen(true)}
+                className=""
+            >
+                <Search size={20} />
             </button>
 
-        </form>
+            {/* Search Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50">
+                    <div className="relative bg-white p-6 w-[90%] max-w-md rounded-lg shadow-lg animate-fadeIn">
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute top-3 right-3 text-black hover:text-red-600"
+                        >
+                            <X size={22} />
+                        </button>
+
+                        <form onSubmit={handleSearch} className="w-full flex flex-col items-center gap-4">
+                            <input
+                                type="text"
+                                placeholder={placeholder}
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="w-full h-[40px] px-4 pl-5 text-lg font-mono text-black bg-white border-2 border-black rounded-none outline-none transition-all duration-300 shadow-[4px_4px_0px_#000] placeholder:text-gray-500 focus:bg-black focus:text-white focus:border-white focus:placeholder:text-white focus:ring-0 focus:animate-shake hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_#000]"
+                            />
+                            <button
+                                type="submit"
+                                className="w-full px-4 py-2 bg-[#FB8600] text-white text-lg font-bold shadow-[4px_4px_0px_#000] transition-all hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0px_#000] flex justify-center items-center gap-2"
+                            >
+                                {isLoading ? (
+                                    <Loader className="animate-spin" size={20} />
+                                ) : (
+                                    "Search"
+                                )}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </>
     );
 };
 

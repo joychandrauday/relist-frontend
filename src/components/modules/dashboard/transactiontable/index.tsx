@@ -12,7 +12,7 @@ const TransactionTable = ({ orders }: { orders: ITransaction[] }) => {
         }
         const res = await updateTransactionStatus(order._id, updateData);
         if (res.data.status === 'completed') {
-            await updateListing({ status: 'sold' }, productID)
+            await updateListing({ quantity: 'sold' }, productID)
             await updateOrderStatus(order.orderID._id, { orderStatus: 'completed' })
             toast.success('Order updated successfully!!')
             window.location.reload()

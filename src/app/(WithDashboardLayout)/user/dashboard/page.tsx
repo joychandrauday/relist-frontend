@@ -1,9 +1,9 @@
-import ProfilePage from "./profile/page";
+import UserOverview from "@/components/modules/dashboard/Overview/UserOverview";
 
 export default function UserDashboard() {
   return (
-    <div>
-      <ProfilePage />
+    <div className="p-4">
+      <UserOverview />
     </div>
   );
 }

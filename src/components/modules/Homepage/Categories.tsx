@@ -1,9 +1,13 @@
-'use client'
+'use client';
 import { getAllCategories } from "@/services/listings";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Marquee from "react-fast-marquee";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';  // Import Swiper styles
+import 'swiper/css/autoplay'; // Import the autoplay module's styles if needed
+import { Autoplay } from 'swiper/modules';
+import { CircleChevronLeft, CircleChevronRight } from "lucide-react";
 
 export interface ICategory {
     _id: string;
@@ -29,19 +33,39 @@ const Categories = () => {
     }, []);
 
     return (
-        <div className="md:min-h-screen p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="p-6 py-10">
+            <div className="max-w-7xl mx-auto relative">
                 {/* 🔹 Title */}
-                <h1 className="text-3xl font-bold  mb-6 text-center">
-                    Explore Categories
+                <h1 className="text-3xl font-bold mb-6 text-center">
+                    Explore by Categories
                 </h1>
 
-                {/* 🔹 Category Marquee */}
-                <Marquee gradient={false} speed={50} pauseOnHover={true}>
-                    <div className="flex py-6 space-x-6">
-                        {categories?.map((category) => (
-                            <Link href={`/products?category=${category.name}`} key={category._id}>
-                                <div className="dark:shadow-white shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-1 transition duration-300 cursor-pointer p-4 flex flex-col items-center w-60">
+                {/* 🔹 Category Swiper Carousel */}
+                <Swiper
+                    spaceBetween={20} // Space between slides
+                    slidesPerView={5} // Number of slides visible at a time
+                    autoplay={{
+                        delay: 2500, // Autoplay every 2.5 seconds
+                        disableOnInteraction: false, // Keep autoplay even after interaction
+                    }}
+                    loop={true} // Infinite loop of slides
+                    modules={[Autoplay]} // Enable autoplay module
+                    breakpoints={{
+                        320: { // Mobile
+                            slidesPerView: 1,
+                        },
+                        768: { // Tablet
+                            slidesPerView: 2,
+                        },
+                        1024: { // Large Devices
+                            slidesPerView: 3,
+                        },
+                    }}
+                >
+                    {categories?.map((category) => (
+                        <SwiperSlide key={category._id}>
+                            <Link href={`/products?category=${category.name}`}>
+                                <div className="border shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-1 transition duration-300 cursor-pointer p-4 flex flex-col items-center">
                                     {/* 📌 Category Info */}
                                     <div className="w-24 h-24 rounded-full overflow-hidden">
                                         <Image
@@ -52,12 +76,18 @@ const Categories = () => {
                                             className="object-cover w-full h-full"
                                         />
                                     </div>
-                                    <h2 className="text-xl font-semibold text-gray-800 mt-2">{category.name}</h2>
+                                    <h2 className="text-xl font-semibold mt-2">{category.name}</h2>
                                 </div>
                             </Link>
-                        ))}
+                        </SwiperSlide>
+                    ))}
+                    <div className="z-50 absolute left-0 top-1/2 transform -translate-y-1/2 text-[#EA580C] p-2 rounded-full cursor-pointer">
+                        <CircleChevronLeft className="swiper-button-prev text-[#EA580C]" size={20} />
                     </div>
-                </Marquee>
+                    <div className="z-50 absolute right-0 top-1/2 transform -translate-y-1/2  p-2 rounded-full cursor-pointer">
+                        <CircleChevronRight className="swiper-button-next text-[#EA580C]" size={20} />
+                    </div>
+                </Swiper>
             </div>
         </div>
     );

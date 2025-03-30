@@ -17,7 +17,7 @@ const SIngleProductContainer = ({ product }: { product: IProduct }) => {
                 listingId: product._id  // Sending as required
             };
             const res = await addToWishlist(payload);
-            console.log(res);
+
             if (res.success) {
                 toast.success('Added to wishlist!');
             }

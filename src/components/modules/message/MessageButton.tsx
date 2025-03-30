@@ -26,7 +26,6 @@ const MessageButton = ({ sellerId, sellerName, sellerAvatar }: { sellerId: strin
             setLoadingMessages(true); // Set loading true when fetching messages
             try {
                 const { data } = await getMessage(currentUserId, sellerId);
-                console.log("Fetched messages:", data);
                 const formattedMessages = data.map((msg: {
                     senderID: { _id: string, name: string };
                     receiverID: { _id: string };
@@ -76,12 +75,11 @@ const MessageButton = ({ sellerId, sellerName, sellerAvatar }: { sellerId: strin
         };
 
         try {
-            const data = await sendMessage(messageBody);
-            console.log("Message sent:", data);
+            await sendMessage(messageBody);
         } catch (error) {
             console.error("Error sending message:", error);
         } finally {
-            setSendingMessage(false); // Set loading false when done sending
+            setSendingMessage(false);
         }
     };
 

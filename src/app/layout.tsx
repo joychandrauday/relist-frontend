@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import SessionProviders from "@/lib/sessionProviders";
+import StoreProvider from "@/lib/storeProvider";
 
 export const metadata: Metadata = {
   title: "RE-LIST | Relist, Reuse, Recycle",
@@ -18,12 +19,15 @@ export default async function RootLayout({
     <html lang="en" data-theme="light">
       <body>
         <SessionProviders>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <div>
-              <main className="min-h-screen">{children}</main>
-              <Toaster />
-            </div>
-          </ThemeProvider >
+          <StoreProvider>
+
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+              <div>
+                <main className="min-h-screen">{children}</main>
+                <Toaster />
+              </div>
+            </ThemeProvider >
+          </StoreProvider>
         </SessionProviders>
       </body>
     </html >

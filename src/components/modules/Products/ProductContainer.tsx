@@ -18,12 +18,20 @@ const ProductContainer = ({ data }: { data: Prop['data'] }) => {
     return (
         <div className="wrap">
             <ProductFilter />
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 container mx-auto">
-                {data?.listings.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                ))}
-            </div>
-            <ProductPaginate totalPage={data?.meta?.totalPages} />
+            {
+                data.listings.length === 0 ?
+                    <p className="text-center">No products found.</p>
+                    : <>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 container mx-auto">
+                            {data?.listings.map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))}
+                        </div>
+                        <ProductPaginate totalPage={data?.meta?.totalPages} />
+
+                    </>
+            }
         </div >
     );
 };

@@ -21,6 +21,7 @@ type ProductFormInputs = {
     state?: string;
     country: string;
     images: FileList;
+    quantity: number;
 };
 
 const conditionOptions = [
@@ -97,7 +98,9 @@ const AddProduct = () => {
                     city: data.city,
                     state: data.state || "",
                     country: data.country
-                }
+                },
+                quantity: data.quantity
+
             };
 
             const response = await addListing(listingData);
@@ -152,6 +155,16 @@ const AddProduct = () => {
                     />
                     {errors.price && <span className="text-red-500">{errors.price.message}</span>}
                 </div>
+                {/* Price */}
+                <div>
+                    <Label>Quantity</Label>
+                    <Input
+                        type="number"
+                        {...register("quantity", { required: "quantity is required" })}
+                        className="w-full mt-1 p-2 border rounded-md"
+                    />
+                    {errors.quantity && <span className="text-red-500">{errors.quantity.message}</span>}
+                </div>
 
                 {/* Condition */}
                 <div>
@@ -175,7 +188,7 @@ const AddProduct = () => {
                         className="w-full mt-1 p-2 border rounded-md"
                     >
                         {categories.map(cat => (
-                            <option key={cat._id} value={cat.name}>{cat.name}</option>
+                            <option key={cat._id} value={cat._id}>{cat.name}</option>
                         ))}
                     </select>
                     {errors.category && <span className="text-red-500">{errors.category.message}</span>}

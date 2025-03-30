@@ -11,7 +11,8 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3001"); // Socket.IO server URL
+const socket = io("http://localhost:3001");
+
 export type FormValues = {
   email: string;
   password: string;
@@ -21,47 +22,53 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>();
+
   const router = useRouter();
   const { theme } = useTheme();
-  const { data: session } = useSession(); // Get the current session data
-  const [userEmail, setUserEmail] = useState<string | null>(null); // Store the user email for socket operations
+  const { data: session } = useSession();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     if (session?.user?.id) {
-      // Emit userLoggedIn event once the user is logged in
-      socket.emit("userLoggedIn", session?.user?.id);
+      socket.emit("userLoggedIn", session.user.id);
       setUserEmail(session.user.id);
-      console.log('yess');
     }
-
-    // Cleanup: Emit logout event when the user disconnects or logs out
     return () => {
       if (userEmail) {
         socket.emit("logout", userEmail);
       }
     };
-  }, [session?.user?.email, session?.user?.id, userEmail]); // Listen for session updates
+  }, [session?.user?.id, userEmail]);
+
+  useEffect(() => {
+    if (session?.user?.role) {
+      router.push(`/${session.user.role}/dashboard`);
+    }
+  }, [session, router]);
 
   const onSubmit = async (data: FormValues) => {
     try {
       const res = await signIn("credentials", {
-        redirect: false, // Prevent auto-redirect
-        ...data, // Pass the credentials (email, password)
+        redirect: false,
+        ...data,
       });
-
-      console.log(res);
       if (res?.error) {
         toast.error("Login failed. Please check your credentials.");
       } else {
         toast.success("User login successful!");
-        // Now the socket will be notified via the useEffect hook when the session is available
       }
     } catch (error) {
-      toast.error('Something went wrong!');
+      toast.error("Something went wrong!");
       console.error("Login error:", error);
     }
+  };
+
+  const onDemoUserClick = (email: string, password: string) => {
+    setValue("email", email);
+    setValue("password", password);
   };
 
   return (
@@ -76,11 +83,8 @@ const LoginPage = () => {
         />
         <h1 className="text-center text-3xl font-bold text-gray-900 dark:text-gray-100">Login</h1>
 
-        {/* Back to Home Button */}
         <div className="text-center mt-4">
-          <Link href="/" className="text-teal-500 hover:underline">
-            &larr; Back to Home
-          </Link>
+          <Link href="/" className="text-teal-500 hover:underline">&larr; Back to Home</Link>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
@@ -101,8 +105,25 @@ const LoginPage = () => {
               className="w-full mt-1 px-4 py-2 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-900 dark:text-gray-100"
               placeholder="Enter your password"
             />
-            <p className="text-sm opacity-30 pt-2">for google or github sign-in users default password is &quot;password&quot;</p>
           </div>
+
+          <div className="flex justify-between mt-4">
+            <button
+              type="button"
+              onClick={() => onDemoUserClick("d@b.com", "111111")}
+              className="w-1/2 py-2 mr-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400"
+            >
+              Demo User
+            </button>
+            <button
+              type="button"
+              onClick={() => onDemoUserClick("joychandraud@gmail.com", "aaaaaa")}
+              className="w-1/2 py-2 bg-purple-500 text-white font-semibold rounded-md hover:bg-purple-600 focus:ring-2 focus:ring-purple-400"
+            >
+              Demo Admin
+            </button>
+          </div>
+
           <button
             type="submit"
             className="w-full py-2 mt-4 bg-teal-500 text-white font-semibold rounded-md hover:bg-teal-600 focus:ring-2 focus:ring-teal-400"
@@ -112,10 +133,7 @@ const LoginPage = () => {
         </form>
 
         <p className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-          Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-teal-500 hover:underline">
-            Sign up
-          </Link>
+          Don&apos;t have an account? <Link href="/register" className="text-teal-500 hover:underline">Sign up</Link>
         </p>
 
         <p className="text-center mt-4 text-sm text-gray-500 dark:text-gray-400">Or continue with</p>

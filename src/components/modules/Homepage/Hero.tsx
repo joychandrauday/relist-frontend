@@ -1,12 +1,13 @@
-import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
+
 import { getAllListings } from '@/services/listings';
 import React from 'react';
+import HeroBanner from './HeroBannerWrap';
 
 const Hero = async () => {
     const { data: listings } = await getAllListings('5', '');
     return (
-        <div>
-            <AnimatedTestimonials testimonials={listings?.listings} autoplay={true} />
+        <div className=''>
+            <HeroBanner products={listings.listings} />
         </div>
     );
 }

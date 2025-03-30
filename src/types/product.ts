@@ -7,7 +7,11 @@ export interface IProduct {
     price: number;
     condition: string;
     images: string[];
-    category: string;
+    category: {
+        _id: string;
+        name: string;
+        description: string;
+    };
     userID: {
         _id: string;
         name: string;
@@ -20,4 +24,6 @@ export interface IProduct {
         state?: string;
         country: string;
     };
+    quantity: number;
+    offerPrice: number;
 }

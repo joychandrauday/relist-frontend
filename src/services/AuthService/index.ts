@@ -64,7 +64,6 @@ export const logout = async () => {
 export const addToWishlist = async (productId: any) => {
   try {
     const session = await getServerSession(authOptions)
-    console.log(session);
     const res = await fetch(`${process.env.SERVER_API}/users/${session?.user?.id}/wishlist`, {
       method: "POST",
       headers: {

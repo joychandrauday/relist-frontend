@@ -1,6 +1,7 @@
 'use client'
 import LoadingPage from "@/components/utils/Loading";
 import { getSingleOrder, verifyOrder } from "@/services/cart";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 // Order Status Response Type
@@ -26,9 +27,10 @@ interface OrderStatus {
     address: string;
     city: string;
 }
+
 interface ProductResponse {
     data: {
-        product: ProductDetails;
+        products: ProductDetails[];
         shippingAddress: string;
         estimatedDeliveryDate: string;
         orderStatus: string;
@@ -36,11 +38,17 @@ interface ProductResponse {
 }
 
 interface ProductDetails {
-    productId: string;
+    productId: {
+        _id: string;
+        title: string;
+        price: number;
+        images: string[];
+    };
     quantity: number;
     price: number;
     totalPrice: number;
 }
+
 const UserPayment = ({ orderId }: { orderId?: string }) => {
     const [orderStatus, setOrderStatus] = useState<OrderStatusResponse | null>(null);
     const [product, setProduct] = useState<ProductResponse | null>(null);
@@ -75,9 +83,9 @@ const UserPayment = ({ orderId }: { orderId?: string }) => {
 
         fetchOrderStatus();
     }, [orderId]);
-
     if (loading) return <LoadingPage />;
     if (error) return <p className="text-red-500">{error}</p>;
+
     return (
         <div className="p-6 rounded-lg shadow-lg mt-8 max-w-3xl mx-auto">
             <h2 className="text-2xl font-semibold mb-4">Payment Details</h2>
@@ -94,21 +102,36 @@ const UserPayment = ({ orderId }: { orderId?: string }) => {
                     </p>
                 </div>
 
-                {/* Product Details */}
-                <div className="mb-4">
-                    <h3 className="text-xl font-semibold mb-2">Product Details</h3>
-                    <p><span className="font-semibold">Product Name:</span> {product?.data?.product?.productId || "N/A"}</p>
-                    <p><span className="font-semibold">Quantity:</span> {product?.data?.product?.quantity || "N/A"}</p>
-                    <p><span className="font-semibold">Price:</span> {product?.data?.product?.price || "N/A"} BDT</p>
-                    <p><span className="font-semibold">Total Price:</span> {product?.data?.product?.totalPrice || "N/A"} BDT</p>
-                </div>
-
                 {/* Shipping & Order Status */}
                 <div className="mb-4">
                     <p><span className="font-semibold">Shipping Address:</span> {product?.data?.shippingAddress || "Not Available"}</p>
                     <p><span className="font-semibold">Estimated Delivery Date:</span> {product?.data?.estimatedDeliveryDate ? new Date(product.data?.estimatedDeliveryDate).toLocaleDateString() : "N/A"}</p>
                     <p><span className="font-semibold">Order Status:</span> {product?.data?.orderStatus || "N/A"}</p>
                 </div>
+            </div>
+
+            {/* Product Details */}
+            <h3 className="text-xl font-semibold mb-4">Product Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {product?.data?.products.map((productDetail) => (
+                    <div key={productDetail.productId._id} className="border p-4 rounded-lg shadow-md hover:shadow-lg transition-all">
+                        <h4 className="font-semibold text-lg">{productDetail.productId.title}</h4>
+                        <div className="mt-2">
+                            <p><span className="font-semibold">Quantity:</span> {productDetail.quantity}</p>
+                            <p><span className="font-semibold">Price:</span> {productDetail.price} BDT</p>
+                            <p><span className="font-semibold">Total Price:</span> {productDetail.totalPrice} BDT</p>
+                            {productDetail.productId.images?.length > 0 && (
+                                <Image
+                                    width={150}
+                                    height={150}
+                                    src={productDetail.productId.images[0]}
+                                    alt={productDetail.productId.title}
+                                    className="mt-2 w-full h-40 object-cover rounded-md"
+                                />
+                            )}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

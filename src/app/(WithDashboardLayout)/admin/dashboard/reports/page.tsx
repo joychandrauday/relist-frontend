@@ -28,7 +28,7 @@ const ReportPage = async () => {
                 <section className=" p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl font-semibold text-gray-700 mb-4">Product Metadata</h2>
                     <div className="grid gap-4">
-                        <div className="bg-blue-50 p-4 rounded-lg">
+                        <div className=" p-4 rounded-lg">
                             <p className="text-sm text-gray-500">Total Products</p>
                             <h3 className="text-xl font-bold">{listings.meta.total}</h3>
                         </div>
@@ -40,15 +40,15 @@ const ReportPage = async () => {
                 <section className=" p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl font-semibold text-gray-700 mb-4">User Metadata</h2>
                     <div className="grid gap-4">
-                        <div className="bg-green-50 p-4 rounded-lg">
+                        <div className=" p-4 rounded-lg">
                             <p className="text-sm text-gray-500">Total Users</p>
                             <h3 className="text-xl font-bold">{totalUsers}</h3>
                         </div>
-                        <div className="bg-green-50 p-4 rounded-lg">
+                        <div className=" p-4 rounded-lg">
                             <p className="text-sm text-gray-500">Active Users</p>
                             <h3 className="text-xl font-bold">{activeUsers}</h3>
                         </div>
-                        <div className="bg-green-50 p-4 rounded-lg">
+                        <div className=" p-4 rounded-lg">
                             <p className="text-sm text-gray-500">Inactive Users</p>
                             <h3 className="text-xl font-bold">{inactiveUsers}</h3>
                         </div>

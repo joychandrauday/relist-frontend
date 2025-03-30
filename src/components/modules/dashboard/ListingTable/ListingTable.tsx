@@ -1,19 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { deleteListing, getAllCategories, updateListing } from "@/services/listings";
+import { deleteListing, updateListing } from "@/services/listings";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Swal from "sweetalert2"; // SweetAlert2 import
-import { AvatarImage } from "@radix-ui/react-avatar";
-import { Avatar } from "@/components/ui/avatar";
-import { ICategory } from "../../Products/ProductFilter";
 import Image from "next/image";
 
 // Interfaces
@@ -23,15 +15,18 @@ interface Listing {
     description: string;
     price: number;
     condition: string;
-    category: string;
+    category: {
+        _id: string;
+        name: string;
+    };
     status: string;
     images: string[];
     location: {
-        city: string | undefined;
+        city: string;
         state?: string;
         country: string;
     };
-
+    quantity: number;
 }
 
 const conditionOptions = [
@@ -40,35 +35,19 @@ const conditionOptions = [
 const districtsOfBangladesh = [
     "Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", "Chattogram", "Chuadanga", "Cox's Bazar", "Cumilla", "Dhaka", "Dinajpur", "Faridpur", "Feni", "Gaibandha", "Gazipur", "Gopalganj", "Habiganj", "Jamalpur", "Jashore", "Jhalokathi", "Jhenaidah", "Joypurhat", "Khagrachari", "Khulna", "Kishoreganj", "Kurigram", "Kushtia", "Lakshmipur", "Lalmonirhat", "Madaripur", "Magura", "Manikganj", "Meherpur", "Moulvibazar", "Munshiganj", "Mymensingh", "Naogaon", "Narail", "Narayanganj", "Narsingdi", "Natore", "Netrokona", "Nilphamari", "Noakhali", "Pabna", "Panchagarh", "Patuakhali", "Pirojpur", "Rajbari", "Rajshahi", "Rangamati", "Rangpur", "Satkhira", "Shariatpur", "Sherpur", "Sirajganj", "Sunamganj", "Sylhet", "Tangail", "Thakurgaon"
 ];
+
 // Props
 const ListingTable = ({ listings }: { listings: Listing[] }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedListing, setSelectedListing] = useState<Partial<Listing> | null>(null);
     const [originalListing, setOriginalListing] = useState<Partial<Listing> | null>(null);
-    const [categories, setCategories] = useState<ICategory[]>([])
-    useEffect(() => {
-        // Define an async function to fetch data
-        const fetchCategories = async () => {
-            try {
-                // Assuming getAllCategories() returns a promise
-                const { data } = await getAllCategories();
-                setCategories(data);  // Set categories data to state
-            } catch (error) {
-                console.log('Failed to fetch categories'); // Handle error
-            }
-        };
 
-        fetchCategories();  // Call the async function
-
-    }, []);
-    // Open Modal with Selected Listing Data
     const openEditModal = (listing: Listing) => {
         setSelectedListing({ ...listing });
-        setOriginalListing({ ...listing }); // Store original data to compare changes
+        setOriginalListing({ ...listing });
         setIsModalOpen(true);
     };
 
-    // Close Modal
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedListing(null);
@@ -83,51 +62,60 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
         });
     };
 
-    // Handle location field changes
     const handleLocationChange = (
         e: React.ChangeEvent<HTMLElement>,
         field: 'city' | 'state' | 'country'
     ) => {
         if (!selectedListing) return;
-        if (e.target instanceof HTMLSelectElement) {
-            setSelectedListing({
-                ...selectedListing,
-                location: {
-                    ...selectedListing.location,
-                    [field]: e.target.value || "",
-                } as { city: string; state?: string; country: string },
 
-            });
-        }
-    }
+        // Ensure selectedListing.location exists or fallback to an empty object
+        const location = selectedListing.location ?? { city: "", state: "", country: "" };
 
-    // Save changes
+        const target = e.target as HTMLSelectElement | HTMLInputElement;
+        const value = target.value;
+
+        // Ensure city and country are always strings, provide empty string if undefined
+        const newLocation = {
+            ...location,
+            [field]: value,
+            city: location.city ?? "", // Ensure city is always a string
+            country: location.country ?? "" // Ensure country is always a string
+        };
+
+        setSelectedListing({
+            ...selectedListing,
+            location: newLocation,
+        });
+    };
+
+
+
     const handleSave = async () => {
         if (!selectedListing || !selectedListing._id) return;
 
-        // Extract only modified fields
         const updatedFields: Partial<Listing> = {};
 
-        // Iterate over selectedListing keys
         (Object.keys(selectedListing) as (keyof Listing)[]).forEach((key) => {
             const newValue = selectedListing[key];
             const oldValue = originalListing?.[key];
 
             if (key === 'location' && typeof newValue === 'object' && newValue !== null) {
-                // Handle nested properties inside 'location'
                 const location = newValue as { city?: string; state?: string; country: string };
                 const originalLocation = oldValue as { city?: string; state?: string; country: string } | undefined;
 
-                // Check if location has changed by comparing serialized versions
-                if (JSON.stringify(location) !== JSON.stringify(originalLocation)) {
-                    updatedFields[key] = {
-                        city: location.city !== undefined ? location.city : "", // Ensure city is set to an empty string if not defined
-                        state: location.state,
-                        country: location.country,
-                    };
+                // Ensure city is always a string, even if it's undefined
+                const sanitizedLocation = {
+                    city: location.city ?? "", // Fallback to an empty string if city is undefined
+                    state: location.state,
+                    country: location.country ?? "", // Fallback to an empty string if country is undefined
+                };
+
+                // Compare with originalLocation to check if any change occurred
+                if (JSON.stringify(sanitizedLocation) !== JSON.stringify(originalLocation)) {
+                    updatedFields[key] = sanitizedLocation;
                 }
             } else if (newValue !== oldValue) {
-                updatedFields[key] = newValue as never; // Ensuring type consistency
+                updatedFields[key] = newValue as never;
             }
         });
 
@@ -137,19 +125,15 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
         }
 
         try {
-            const res = await updateListing(updatedFields, selectedListing._id);
-
+            await updateListing(updatedFields, selectedListing._id);
             toast.success("Listing updated successfully!");
             closeModal();
         } catch (error) {
+            console.log(error);
             toast.error("Failed to update listing.");
         }
     };
 
-
-
-
-    // Handle Delete
     const handleDelete = async (id: string) => {
         const result = await Swal.fire({
             title: 'Are you sure?',
@@ -162,11 +146,10 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
 
         if (result.isConfirmed) {
             try {
-                const res = await deleteListing(id);
-
+                await deleteListing(id);
                 Swal.fire("Deleted!", "The listing has been deleted.", "success");
-                // window.location.reload();
             } catch (error) {
+                console.log(error);
                 toast.error("Failed to delete listing.");
             }
         }
@@ -176,7 +159,7 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
         <div className="wrap overflow-x-auto">
             <div className="overflow-x-auto table-auto w-full">
                 <table className="w-full min-w-[600px] border border-gray-300">
-                    <thead className="">
+                    <thead>
                         <tr>
                             <th className="p-2 text-sm md:text-base border">Title</th>
                             <th className="p-2 text-sm md:text-base border">Price</th>
@@ -199,6 +182,7 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                                                     await updateListing({ status: e.target.value }, listing._id);
                                                     toast.success("Status updated successfully!");
                                                 } catch (error) {
+                                                    console.log(error);
                                                     toast.error("Failed to update status.");
                                                 }
                                             }}
@@ -235,10 +219,11 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                     </tbody>
                 </table>
             </div>
+
             {/* Edit Modal */}
             {isModalOpen && selectedListing && (
                 <div className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 ${isModalOpen ? '' : 'hidden'}`}>
-                    <div className="backdrop-blur-lg border-2 border-gray-400  rounded-lg shadow-lg p-6 w-[500px]">
+                    <div className="backdrop-blur-lg border-2 border-gray-400 rounded-lg shadow-lg p-6 w-[500px]">
                         <h2 className="text-lg font-semibold mb-4">Edit Listing</h2>
                         <div className="grid gap-2 py-4">
                             <div>
@@ -253,16 +238,8 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                                 <Label htmlFor="price">Price</Label>
                                 <Input name="price" type="number" value={selectedListing.price || ""} onChange={handleChange} />
                             </div>
-                            <div className="flex gap-2">
-                                <div>
-                                    <Label htmlFor="category">Category</Label>
-                                    <select name="category" value={selectedListing?.category || ""} onChange={(e) => setSelectedListing({ ...selectedListing, category: e.target.value })} className="input">
-                                        <option value="">Select Category</option>
-                                        {categories.map((category) => (
-                                            <option key={category._id} value={category.name}>{category.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                            <div className="grid grid-cols-2 gap-2">
+
                                 <div>
                                     <Label htmlFor="condition">Condition</Label>
                                     <select name="condition" value={selectedListing?.condition || ""} onChange={(e) => setSelectedListing({ ...selectedListing, condition: e.target.value })} className="input">
@@ -281,23 +258,23 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                                         ))}
                                     </select>
                                 </div>
+                                <div>
+                                    <Label htmlFor="status">Status</Label>
+                                    <select name="status" value={selectedListing?.status || ""} onChange={(e) => setSelectedListing({ ...selectedListing, status: e.target.value })} className="input">
+                                        <option value="">Select Status</option>
+                                        <option value="sold">Sold</option>
+                                        <option value="available">Available</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <Label htmlFor="status">Quantity</Label>
+                                    <div>
+                                        <Label htmlFor="quantity">quantity</Label>
+                                        <Input name="quantity" type="number" value={selectedListing.quantity || 0} onChange={handleChange} />
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <Label htmlFor="location-state">State</Label>
-                                <Input name="state" value={selectedListing.location?.state || ""} onChange={(e) => handleLocationChange(e, 'state')} />
-                            </div>
-                            <div>
-                                <Label htmlFor="location-country">Country</Label>
-                                <Input name="country" value={selectedListing.location?.country || ""} onChange={(e) => handleLocationChange(e, 'country')} />
-                            </div>
-                            <div>
-                                <Label htmlFor="status">Status</Label>
-                                <select name="status" value={selectedListing?.status || ""} onChange={(e) => setSelectedListing({ ...selectedListing, status: e.target.value })} className="input">
-                                    <option value="">Select Status</option>
-                                    <option value="sold">Sold</option>
-                                    <option value="available">Available</option>
-                                </select>
-                            </div>
+
                         </div>
                         <div className="flex justify-end gap-2 mt-4">
                             <button className="px-4 py-2 border rounded" onClick={closeModal}>Cancel</button>
@@ -306,7 +283,6 @@ const ListingTable = ({ listings }: { listings: Listing[] }) => {
                     </div>
                 </div>
             )}
-
         </div>
     );
 };

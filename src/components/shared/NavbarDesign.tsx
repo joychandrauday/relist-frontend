@@ -9,10 +9,15 @@ import { FaHeart, FaBars, FaFacebookF, FaTwitter, FaInstagram } from "react-icon
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { WordRotate } from "../magicui/word-rotate";
-import NavSearch from "./NavSearch";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { DropdownMenuLabel, DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { ShoppingCart } from "lucide-react";
+import { useAppSelector } from "@/redux/hook";
+import { orderedProducts } from "@/redux/features/cartSlice";
+import CategoriesDropdown from "./CategoriesDropdown";
+import NavSearch from "./NavSearch";
+import { getAllSidebarUsers } from "@/services/message";
+import { IUser } from "@/types/user";
 export interface Session {
   user?: {
     name?: string | null;
@@ -26,6 +31,9 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
   const { theme, setTheme } = useTheme();
   const [scrolling, setScrolling] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [chatUser, setChatUser] = useState<IUser[]>([]);
+
+  const products = useAppSelector(orderedProducts);
   const router = useRouter()
   useEffect(() => {
     const handleScroll = () => {
@@ -39,7 +47,16 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  useEffect(() => {
+    const fetchChatUser = async () => {
+      // Fetch chat user data from your backend API
+      const response = await getAllSidebarUsers();
 
+      setChatUser(response.data);
+    };
+    fetchChatUser();
+
+  }, [])
   const handleLogout = async () => {
     try {
 
@@ -49,12 +66,7 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
       console.error("Error during logout:", error);
     }
   };
-  const recentChats = [
-    { id: "1", name: "Alice", avatar: "/avatar.png", lastMessage: "Hey! How are you?" },
-    { id: "2", name: "Bob", avatar: "/avatar.png", lastMessage: "Let's meet tomorrow." },
-    { id: "3", name: "Charlie", avatar: "/avatar.png", lastMessage: "Did you check the files?" },
-    { id: "4", name: "David", avatar: "/avatar.png", lastMessage: "Great job on the project!" }
-  ];
+
   return (
     <div className="wrap">
       <div className=" text-gray-600 text-sm py-1 flex justify-between items-center px-6 border-b">
@@ -82,41 +94,56 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
             width={250}
             height={150}
           />
-
         </Link>
-        <NavSearch />
       </div>
       <div
         className={`w-full md:justify-around z-50 flex justify-between border-b px-8 py-3 border-gray-500 transition-all duration-300 ${scrolling ? "backdrop-blur-md bg-opacity-75 fixed top-0" : "bg-transparent"
           }`}
       >
         {/* Navbar Start (Hidden in Mobile) */}
-        <div className="navbar-start hidden md:flex items-center gap-4 w-1/2">
-          <div className="flex gap-6">
-            <Link href="/" className="hover:text-[#FB8500]">Home</Link>
-            <Link href="/products" className="hover:text-[#FB8500]">Products</Link>
-            <Link href="/about" className="hover:text-[#FB8500]">About</Link>
-            <Link href="/contact" className="hover:text-[#FB8500]">Contact</Link>
-          </div>
+        <div className="navbar-start hidden md:flex  items-center gap-4 w-1/2">
+          <CategoriesDropdown />
         </div>
-
+        <div className="hidden items-center md:flex gap-6">
+          <Link href="/" className="hover:text-[#FB8500]">Home</Link>
+          <Link href="/products" className="hover:text-[#FB8500]">Products</Link>
+          <Link href="/about" className="hover:text-[#FB8500]">About</Link>
+          <Link href="/contact" className="hover:text-[#FB8500]">Contact</Link>
+        </div>
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
-          <button onClick={() => setMenuOpen(!menuOpen)} className="text-2xl text-white">
-            {menuOpen ? <IoClose /> : <FaBars />}
-          </button>
-        </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button onClick={() => setMenuOpen(!menuOpen)} className="text-2xl text-white">
+                {menuOpen ? <IoClose /> : <FaBars />}
+              </button>
+            </DropdownMenuTrigger>
 
-        {/* Mobile Dropdown Menu */}
-        {menuOpen && (
-          <div className="absolute top-16 left-0 w-full bg-gray-900 text-white flex flex-col items-center py-4 md:hidden">
-            <Link href="/" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Home</Link>
-            <Link href="/products" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Products</Link>
-            <Link href="/about" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>About</Link>
-            <Link href="/contact" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Contact</Link>
-            <Link href="/wishlist" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Wishlist</Link>
-          </div>
-        )}
+            {/* Mobile Dropdown Menu */}
+            {menuOpen && (
+              <DropdownMenuContent className="absolute top-12 left-0 w-full bg-[#1F2937] text-white flex flex-col items-center py-4">
+                <DropdownMenuItem>
+                  <Link href="/" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Home</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/products" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Products</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/about" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>About</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/contact" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Contact</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/cart" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Contact</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link href="/wishlist" className="py-2 hover:text-[#FB8500]" onClick={() => setMenuOpen(false)}>Wishlist</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            )}
+          </DropdownMenu>
+        </div>
         {/* Navbar End */}
         <div className="navbar-end flex items-center justify-end gap-4 w-1/2">
           {/* Theme Toggle */}
@@ -124,8 +151,9 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
             {theme === "dark" ? "☀️" : "🌙"}
           </button>
 
-          <Link href={'/cart'} className="hidden md:block">
-            <ShoppingCart className="text-2xl  cursor-pointer hover:text-[#FB8500]" />
+          <NavSearch />
+          <Link href={'/cart'} className="hidden md:flex items-center">
+            <ShoppingCart className="text-2xl  cursor-pointer hover:text-[#FB8500]" />({products.length})
           </Link>
           <Link href={'/wishlist'} className="hidden md:block">
             <FaHeart className="text-2xl  cursor-pointer hover:text-[#FB8500]" />
@@ -146,16 +174,14 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
                   <DropdownMenuLabel className="text-lg font-semibold px-4 py-2">Recent Chats</DropdownMenuLabel>
                   <DropdownMenuSeparator />
 
-                  {recentChats.map((chat) => (
-                    <DropdownMenuItem key={chat.id} className="flex items-center space-x-3 p-3 transition">
+                  {chatUser.slice(0, 5).map((chat) => (
+                    <DropdownMenuItem key={chat._id} className="flex items-center space-x-3 p-3 transition">
                       <Avatar className="w-10 h-10">
-                        <AvatarImage src={chat.avatar} alt={chat.name} />
+                        <AvatarImage src={chat.avatar} alt={chat.avatar} />
                         <AvatarFallback>{chat.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <Link href={`/message/${chat.id}`} className="flex flex-col truncate w-full">
-                        <span className="font-medium">{chat.name}</span>
-                        <span className="text-sm text-gray-500 truncate">{chat.lastMessage}</span>
-                      </Link>
+                      {/* name */}
+                      <Link href={`/message/${chat._id}`}>{chat.name}</Link>
                     </DropdownMenuItem>
                   ))}
 
@@ -195,7 +221,7 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
           )}
         </div>
       </div >
-    </div>
+    </div >
   );
 };
 

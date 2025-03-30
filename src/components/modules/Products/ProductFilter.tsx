@@ -45,21 +45,20 @@ const ProductFilter = () => {
 
         router.push(`?${queryParams.toString()}`);
     }, [filters, router]);
+
     useEffect(() => {
-        // Define an async function to fetch data
         const fetchCategories = async () => {
             try {
-                // Assuming getAllCategories() returns a promise
                 const { data } = await getAllCategories();
                 setCategories(data);  // Set categories data to state
             } catch (error) {
-                console.log('Failed to fetch categories'); // Handle error
+                console.log('Failed to fetch categories');
             }
         };
 
-        fetchCategories();  // Call the async function
-
+        fetchCategories();
     }, []);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setFilters(prev => ({
             ...prev,
@@ -94,9 +93,14 @@ const ProductFilter = () => {
                         onChange={handleChange}
                         placeholder="Search for products"
                     />
+                    {/* Reset Filters Button */}
+                    <Button onClick={handleResetFilters} className="bg-[#F98700] hover:bg[#F98700] mt-2 text-white w-full md:w-auto">
+                        Reset Filters
+                    </Button>
                 </div>
 
-                <div className="flex flex-col ">
+                {/* Price Range */}
+                <div className="flex flex-col">
                     <Label htmlFor="priceRange">Price Range</Label>
                     <div className="flex justify-between">
                         <span>৳ {filters.minPrice}</span>
@@ -126,7 +130,7 @@ const ProductFilter = () => {
                     />
                 </div>
 
-                {/* category  Dropdown */}
+                {/* Category Dropdown */}
                 <div className="flex flex-col">
                     <Label htmlFor="category">Category</Label>
                     <select
@@ -138,10 +142,11 @@ const ProductFilter = () => {
                     >
                         <option value="">Select Category</option>
                         {categories.map((category) => (
-                            <option key={category._id} value={category.name}>{category.name}</option>
+                            <option key={category._id} value={category._id}>{category.name}</option>
                         ))}
                     </select>
                 </div>
+
                 {/* Status Dropdown */}
                 <div className="flex flex-col">
                     <Label htmlFor="status">Status</Label>
@@ -191,14 +196,9 @@ const ProductFilter = () => {
                         ))}
                     </select>
                 </div>
-                <div className="flex mt-6">
-                    <Button onClick={handleResetFilters} className="bg-gray-500 text-white w-full md:w-auto">
-                        Reset Filters
-                    </Button>
-                </div>
-            </div>
 
-            {/* Reset Button */}
+
+            </div>
         </div>
     );
 };
