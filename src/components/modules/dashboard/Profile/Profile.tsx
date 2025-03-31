@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -26,20 +27,20 @@ export default function Profile() {
 
     const [userdb, setUserdb] = useState<UserProfile | null>(null);
 
-    useEffect(() => {
-        if (!session?.user?.id) return;
-
-        async function fetchUser() {
-            try {
-                if (!session?.user?.id) return;
-                const res = await getSingleUserProfile(session?.user?.id);
-                setUserdb(res.data);
-            } catch (error) {
-                console.error("Error fetching user:", error);
-            }
+    const fetchUser = async () => {
+        try {
+            if (!session?.user?.id) return;
+            const res = await getSingleUserProfile(session?.user?.id);
+            setUserdb(res.data);
+        } catch (error) {
+            console.error("Error fetching user:", error);
         }
+    };
+
+    useEffect(() => {
         fetchUser();
     }, [session?.user?.id]);
+
 
     // Function to upload image to Cloudinary
     const uploadImage = async (file: File) => {
@@ -72,7 +73,7 @@ export default function Profile() {
 
         try {
             setUploading(true);
-            let avatarUrl = userdb?.avatar
+            let avatarUrl = userdb?.avatar;
             const payload: UpdatePayload = {};
 
             // If name is changed, add to payload
@@ -94,22 +95,25 @@ export default function Profile() {
 
             // Send update request
             await updateUser(payload, session?.user.id);
-            window.location.reload();
             toast.success("Profile updated successfully!");
+
+            // Fetch updated user data
+            await fetchUser();
 
         } catch (err) {
             if (err instanceof Error) {
-                toast.error(`Failed to verify order. ${err.message}`);
+                toast.error(`Failed to update profile. ${err.message}`);
             } else {
-                toast.error("Failed to verify order. An unknown error occurred.");
+                toast.error("Failed to update profile. An unknown error occurred.");
             }
         } finally {
             setUploading(false);
         }
     };
 
+
     return (
-        <div className="max-w-md mx-auto backdrop-blur-lg border-2 border-gray-300 shadow-md rounded-lg p-6 my-24">
+        <div className="max-w-md mx-auto backdrop-blur-lg border-2 border-gray-300 shadow-md rounded-lg p-6 my-10">
             {/* Profile Picture */}
             <div className="relative w-32 h-32 mx-auto cursor-pointer" onClick={() => setShowModal(true)}>
                 <Image
@@ -157,8 +161,8 @@ export default function Profile() {
 
             {/* Image Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className=" p-4 rounded-lg">
+                <div className="fixed inset-0 backdrop-blur-lg bg-gray-900 bg-opacity-90 z-50 flex justify-center items-center">
+                    <div className="p-4 rounded-lg">
                         <Image
                             src={userdb?.avatar || "/relisticon.png"}
                             alt="Profile Image"

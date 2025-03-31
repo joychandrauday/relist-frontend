@@ -1,13 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/redux/hook';
-import { orderedProducts, incrementOrderQuantity, decrementOrderQuantity, removeItem } from '@/redux/features/cartSlice';
+import { orderedProducts, incrementOrderQuantity, decrementOrderQuantity, removeItem, syncCartWithServer } from '@/redux/features/cartSlice';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FaTrashAlt } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 import { createOrder, createTransaction } from '@/services/cart';
+import { getAllListings } from '@/services/listings';
+import { toast } from 'sonner';
 
 const cities = [
     "Bagerhat", "Bandarban", "Barguna", "Barishal", "Bhola", "Bogura", "Brahmanbaria", "Chandpur", "Chattogram", "Chuadanga",
@@ -24,6 +27,21 @@ const CartPage = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const products = useAppSelector(orderedProducts);
+    useEffect(() => {
+        const fetchLatestCartData = async () => {
+            const response = await getAllListings(); // Fetch latest products
+            const latestProducts = response.data.listings; // Update Redux state
+            dispatch(syncCartWithServer(latestProducts)); // Update Redux state
+        };
+
+        fetchLatestCartData();
+
+        const interval = setInterval(() => {
+            fetchLatestCartData(); // Periodically update cart data
+        }, 5000); // Every 10 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
     const [formData, setFormData] = useState({
         name: session?.user?.name || "",
@@ -54,7 +72,12 @@ const CartPage = () => {
     const handleCheckout = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
+        if (products.map(product => (
+            product.orderQuantity > product.quantity
+        ))) {
+            toast.error('the order quantity must not exceed item quantity!')
+            return;
+        }
         const orderInfo = {
             user: session?.user?.id,
             products: products.map(product => ({
@@ -94,26 +117,28 @@ const CartPage = () => {
     };
 
     return (
-        <div className="p-6 w-full mx-auto min-h-screen grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-4 sm:p-6 w-full mx-auto min-h-screen grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Cart Section */}
-            <div className="shadow-md rounded-lg p-4 col-span-2">
-                <h2 className="text-2xl font-bold mb-4">Shopping Cart</h2>
+            <div className="shadow-md rounded-lg p-4 col-span-1 lg:col-span-2">
+                <h2 className="text-xl sm:text-2xl font-bold mb-4">Shopping Cart</h2>
                 {products.length === 0 ? (
                     <p className="text-center text-gray-500">Your cart is empty.</p>
                 ) : (
                     products.map((item) => (
-                        <div key={item._id} className="flex items-center justify-between p-4 border-b">
-                            <Image width={100} height={100} src={item.images?.[0] || "/placeholder.png"} alt={item.title} className="w-16 h-16 object-cover" />
-                            <div className="flex-1 ml-4">
-                                <h3 className="font-semibold">{item.title}</h3>
-                                <p className="text-gray-500">৳{item.price} | quantity: {item.orderQuantity}</p>
+                        <div key={item._id} className="flex flex-col sm:flex-row items-center justify-between p-4 border-b">
+                            <Image width={100} height={100} src={item.images?.[0] || "/placeholder.png"} alt={item.title} className="w-16 h-16 object-cover rounded-md" />
+                            <div className="flex-1 text-center sm:text-left sm:ml-4">
+                                <h3 className="font-semibold text-sm sm:text-base">{item.title}</h3>
+                                <p className="text-gray-500 text-xs sm:text-sm">৳{item.price} | Quantity: {item.quantity}</p>
                             </div>
-                            <div className="flex items-center">
-                                <button onClick={() => updateQuantity(item._id, "dec")} className="px-3 py-1 border rounded-l" disabled={item.orderQuantity === 1}>-</button>
-                                <span className="px-4 py-1">{item.orderQuantity}</span>
-                                <button onClick={() => updateQuantity(item._id, "inc")} className="px-3 py-1 border rounded-r" disabled={item.orderQuantity >= item.quantity}>+</button>
+                            <div className="flex items-center mt-2 sm:mt-0">
+                                <button onClick={() => updateQuantity(item._id, "dec")} className="px-2 sm:px-3 py-1 border rounded-l text-xs sm:text-sm" disabled={item.orderQuantity === 1}>-</button>
+                                <span className="px-3 py-1 text-sm">{item.orderQuantity}</span>
+                                <button onClick={() => updateQuantity(item._id, "inc")} className="px-2 sm:px-3 py-1 border rounded-r text-xs sm:text-sm" disabled={item.orderQuantity >= item.quantity}>+</button>
                             </div>
-                            <button onClick={() => dispatch(removeItem(item._id))} className="text-red-500 ml-4"><FaTrashAlt /></button>
+                            <button onClick={() => dispatch(removeItem(item._id))} className="text-red-500 ml-2 sm:ml-4 text-sm sm:text-base">
+                                <FaTrashAlt />
+                            </button>
                         </div>
                     ))
                 )}
@@ -121,24 +146,29 @@ const CartPage = () => {
 
             {/* Order Summary & Address */}
             <div className="shadow-md rounded-lg p-4 col-span-1">
-                <h2 className="text-2xl font-semibold mb-4">Shipping Details</h2>
-                <input type="text" name="address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} required className="w-full p-2 border rounded-lg mb-2" placeholder="Enter your address" />
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4">Shipping Details</h2>
 
-                <select name="city" value={formData.city} onChange={handleCityChange} required className="w-full p-2 border rounded-lg mb-2">
+                <input type="text" name="address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} required className="w-full p-2 border rounded-lg mb-2 text-sm sm:text-base" placeholder="Enter your address" />
+
+                <select name="city" value={formData.city} onChange={handleCityChange} required className="w-full p-2 border rounded-lg mb-2 text-sm sm:text-base">
                     <option value="" disabled>Select your city</option>
                     {cities.map((city, index) => (
                         <option key={index} value={city}>{city}</option>
                     ))}
                 </select>
 
-                <input type="text" name="phone" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required className="w-full p-2 border rounded-lg mb-4" placeholder="Phone Number" />
+                <input type="text" name="phone" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required className="w-full p-2 border rounded-lg mb-4 text-sm sm:text-base" placeholder="Phone Number" />
 
-                <p className="text-lg">Subtotal: <span className="font-semibold">৳{subtotal.toFixed(2)}</span></p>
-                <p className="text-lg">Shipping Cost: <span className="font-semibold">৳{shippingCost}</span></p>
-                <p className="text-lg font-bold">Total: <span className="text-blue-500">৳{total.toFixed(2)}</span></p>
-                <Button onClick={handleCheckout} disabled={loading} className="w-full bg-[#FB8600] py-2 rounded-lg mt-4">{loading ? 'Processing...' : 'Confirm Order'}</Button>
+                <p className="text-lg sm:text-xl">Subtotal: <span className="font-semibold">৳{subtotal.toFixed(2)}</span></p>
+                <p className="text-lg sm:text-xl">Shipping Cost: <span className="font-semibold">৳{shippingCost}</span></p>
+                <p className="text-lg sm:text-xl font-bold">Total: <span className="text-blue-500">৳{total.toFixed(2)}</span></p>
+
+                <Button onClick={handleCheckout} disabled={loading || !formData.address || !formData.city || !formData.phone || !formData.name} className="w-full bg-[#FB8600] py-2 rounded-lg mt-4 text-sm sm:text-base">
+                    {loading ? 'Processing...' : 'Confirm Order'}
+                </Button>
             </div>
         </div>
+
     );
 };
 

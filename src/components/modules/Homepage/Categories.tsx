@@ -58,13 +58,13 @@ const Categories = () => {
                             slidesPerView: 2,
                         },
                         1024: { // Large Devices
-                            slidesPerView: 3,
+                            slidesPerView: 4,
                         },
                     }}
                 >
                     {categories?.map((category) => (
                         <SwiperSlide key={category._id}>
-                            <Link href={`/products?category=${category.name}`}>
+                            <Link href={`/products?category=${category._id}`}>
                                 <div className="border shadow-lg rounded-lg overflow-hidden transform hover:-translate-y-1 transition duration-300 cursor-pointer p-4 flex flex-col items-center">
                                     {/* 📌 Category Info */}
                                     <div className="w-24 h-24 rounded-full overflow-hidden">

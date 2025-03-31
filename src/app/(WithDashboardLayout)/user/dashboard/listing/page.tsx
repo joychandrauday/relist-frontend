@@ -1,6 +1,5 @@
 import AddProduct from "@/components/modules/dashboard/Forms/AddProductForm";
 import ManageListing from "@/components/modules/dashboard/ListingTable";
-
 import { Button } from "@/components/ui/button";
 import { getAllListingsByUser } from "@/services/listings";
 import Link from "next/link";

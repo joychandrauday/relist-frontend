@@ -30,6 +30,7 @@ export type IOrder = {
         date_time: string,
     },
     estimatedDeliveryDate?: Date;
+    createdAt?: string;
 };
 
 export interface ITransaction {

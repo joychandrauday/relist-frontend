@@ -12,9 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import { FaTachometerAlt, FaHistory, FaListAlt, FaShoppingCart, FaUser, FaBolt } from "react-icons/fa";
-import { AiOutlineSetting } from "react-icons/ai";
 import { RiGroupLine } from "react-icons/ri";
-import { BsFillBarChartLineFill } from "react-icons/bs";
 import Link from "next/link";
 import Image from "next/image";
 import { NavUser } from "../modules/dashboard/Profile/nav-user";
@@ -31,9 +29,8 @@ const adminNavLinks = [
     { title: "Admin Dashboard", url: "/admin/dashboard/", icon: FaTachometerAlt },
     { title: "Manage Users", url: "/admin/dashboard/users", icon: RiGroupLine },
     { title: "Manage Listings", url: "/admin/dashboard/listings", icon: FaListAlt },
-    { title: "Reports", url: "/admin/dashboard/reports", icon: BsFillBarChartLineFill },
     { title: "Flash Sale Management", url: "/admin/dashboard/flash-sale/add", icon: FaBolt },
-    { title: "Settings", url: "/admin/dashboard/settings", icon: AiOutlineSetting },
+    { title: "Profile", url: "/admin/dashboard/profile", icon: FaUser },
 ];
 
 export function AppSidebar() {
@@ -57,10 +54,10 @@ export function AppSidebar() {
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
+                                        <Link href={item.url}>
                                             <item.icon />
                                             <span>{item.title}</span>
-                                        </a>
+                                        </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}

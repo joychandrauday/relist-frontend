@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import {  useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Search, X, Loader } from "lucide-react";
 
 const placeholders = [
@@ -60,7 +60,7 @@ const NavSearch = () => {
             {/* Search Button to Open Modal */}
             <button
                 onClick={() => setIsModalOpen(true)}
-                className=""
+                className="hidden md:block"
             >
                 <Search size={20} />
             </button>

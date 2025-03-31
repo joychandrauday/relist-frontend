@@ -152,7 +152,7 @@ const NavbarDesign = ({ session }: { session: Session | null }) => {
           </button>
 
           <NavSearch />
-          <Link href={'/cart'} className="hidden md:flex items-center">
+          <Link href={'/cart'} className="flex items-center">
             <ShoppingCart className="text-2xl  cursor-pointer hover:text-[#FB8500]" />({products.length})
           </Link>
           <Link href={'/wishlist'} className="hidden md:block">

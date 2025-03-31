@@ -72,14 +72,14 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="w-full max-w-md mt-12 p-8 rounded-xl backdrop-blur-xl bg-white/10 dark:bg-black/30 shadow-lg border border-gray-200 dark:border-gray-700">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="relative w-full max-w-md p-8 rounded-xl backdrop-blur-xl bg-white/10 dark:bg-black/30 shadow-lg border border-gray-200 dark:border-gray-700 group">
         <Image
           src={"/relisticon.png"}
           width={80}
           height={80}
           alt="relist logo"
-          className="object-contain mx-auto mb-4"
+          className="object-contain mx-auto mb-4 absolute top-2 left-2 opacity-25 transition-all duration-300 group-hover:opacity-100 group-hover:brightness-150 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]"
         />
         <h1 className="text-center text-3xl font-bold text-gray-900 dark:text-gray-100">Login</h1>
 
@@ -133,10 +133,10 @@ const LoginPage = () => {
         </form>
 
         <p className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-          Don&apos;t have an account? <Link href="/register" className="text-teal-500 hover:underline">Sign up</Link>
+          Don&apos;t have an account? <Link href="/register" className="text-teal-500 hover:underline">Sign up</Link> Or continue with
         </p>
 
-        <p className="text-center mt-4 text-sm text-gray-500 dark:text-gray-400">Or continue with</p>
+        <p className="text-center mt-4 text-sm text-gray-500 dark:text-gray-400"></p>
         <div className="flex justify-center gap-4 mt-4">
           <button
             onClick={() => signIn("google", { callbackUrl: "/register" })}

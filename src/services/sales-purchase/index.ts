@@ -4,7 +4,6 @@
 import { authOptions } from "@/utils/authOptions";
 import { jwtDecode } from "jwt-decode";
 import { getServerSession } from "next-auth";
-import { revalidatePath } from "next/cache";
 
 export const getOrdersByUserId = async () => {
     const session = await getServerSession(authOptions);
@@ -31,7 +30,6 @@ export const getOrders = async () => {
             { method: "GET" }
         );
         const data = await res.json();
-        revalidatePath(`/user/dashboard`);
         return data;
     } catch (error: any) {
         return Error(error);

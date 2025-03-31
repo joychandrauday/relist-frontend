@@ -1,6 +1,7 @@
 import { IProduct } from "@/types/product";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { WritableDraft } from "immer";
 
 interface CartProduct extends IProduct {
     orderQuantity: number
@@ -52,6 +53,30 @@ const cartSlice = createSlice({
                 (product) => product._id != action.payload
             )
         },
+        updateCartProduct: (state, action) => {
+            const updatedProduct = action.payload;
+            const productIndex = state.products.findIndex((p) => p._id === updatedProduct._id);
+
+            if (productIndex !== -1) {
+                state.products[productIndex] = {
+                    ...updatedProduct,
+                    orderQuantity: state.products[productIndex].orderQuantity
+                };
+            }
+        },
+
+        syncCartWithServer: (state, action) => {
+            const latestProducts = action.payload;
+            latestProducts.forEach((latestProduct: WritableDraft<CartProduct>) => {
+                const productIndex = state.products.findIndex((p) => p._id === latestProduct._id);
+                if (productIndex !== -1) {
+                    state.products[productIndex] = {
+                        ...latestProduct,
+                        orderQuantity: state.products[productIndex].orderQuantity
+                    };
+                }
+            });
+        }
     }
 })
 export const orderedProducts = (state: RootState) => {
@@ -59,5 +84,5 @@ export const orderedProducts = (state: RootState) => {
 }
 
 
-export const { addProduct, incrementOrderQuantity, decrementOrderQuantity, removeItem } = cartSlice.actions
+export const { addProduct, incrementOrderQuantity, decrementOrderQuantity, removeItem, syncCartWithServer } = cartSlice.actions
 export default cartSlice.reducer

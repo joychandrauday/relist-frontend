@@ -26,4 +26,5 @@ export interface IProduct {
     };
     quantity: number;
     offerPrice: number;
+    createdAt: Date;
 }

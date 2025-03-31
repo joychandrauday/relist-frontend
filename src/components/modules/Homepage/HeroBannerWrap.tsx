@@ -41,7 +41,7 @@ const HeroBanner = ({ products }: { products: IProduct[] }) => {
                         Explore Now
                     </Button>
                     <Button variant="outline" className="border-gray-500 text-gray-300 hover:border-white w-full md:w-auto"
-                        onClick={() => router.push('/user/dashboard/listings')}
+                        onClick={() => router.push('/user/dashboard/listing')}
                     >
                         Sell Your Product
                     </Button>
